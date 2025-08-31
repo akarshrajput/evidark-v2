@@ -35,14 +35,19 @@ export default function UserSearch({ onClose, onCreateChat }) {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5050'}/api/v1/users/search?q=${encodeURIComponent(searchQuery)}&limit=20`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5050'}/api/v1/users?search=${encodeURIComponent(searchQuery)}&limit=20`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
       const data = await response.json();
-      setSearchResults(data.users || []);
+      if (data.success) {
+        setSearchResults(data.data || []);
+      } else {
+        console.error('Error in search response:', data);
+        setSearchResults([]);
+      }
     } catch (error) {
       console.error('Error searching users:', error);
       setSearchResults([]);

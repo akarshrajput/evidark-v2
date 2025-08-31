@@ -95,17 +95,19 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
 
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <Avatar className="w-6 h-6">
-                  <AvatarImage src={story.author?.photo} />
-                  <AvatarFallback className="text-xs">
-                    {story.author?.name?.[0] || "U"}
-                  </AvatarFallback>
-                </Avatar>
-                <Link
-                  href={`/user/${story.author?.username}`}
-                  className="text-sm font-medium hover:text-primary transition-colors"
-                >
-                  {story.author?.name || "Anonymous"}
+                <Link href={`/user/${story.author?.username}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                  <Avatar className="w-6 h-6 border border-border">
+                    <AvatarImage
+                      src={story.author?.photo}
+                      alt={story.author?.name}
+                    />
+                    <AvatarFallback className="text-xs bg-secondary">
+                      {story.author?.name?.[0] || "A"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    {story.author?.name}
+                  </span>
                 </Link>
                 <span className="text-xs text-muted-foreground">•</span>
                 <span className="text-xs text-muted-foreground">

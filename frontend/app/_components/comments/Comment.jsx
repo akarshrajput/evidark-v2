@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatDistanceToNow } from "date-fns";
 import { useAuth } from "@/contexts/AuthContext";
+import UserLink from "@/app/_components/ui/UserLink";
 
 export default function Comment({
   comment,
@@ -115,20 +116,12 @@ export default function Comment({
             <div className="flex-1 min-w-0">
               {/* Author Info */}
               <div className="flex items-center gap-2 mb-2">
-                <span className="font-medium text-foreground">
-                  {comment.author?.name}
-                </span>
-                <Badge
-                  variant="outline"
-                  className={`text-xs px-1.5 py-0.5 ${getRoleBadgeColor(
-                    comment.author?.role
-                  )}`}
-                >
-                  {getRoleIcon(comment.author?.role)}
-                  <span className="ml-1 capitalize">
-                    {comment.author?.role}
-                  </span>
-                </Badge>
+                <UserLink 
+                  user={comment.author}
+                  showAvatar={false}
+                  showRole={true}
+                  textSize="text-sm font-medium"
+                />
                 <span className="text-xs text-muted-foreground">
                   {formatDistanceToNow(new Date(comment.createdAt))} ago
                 </span>

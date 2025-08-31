@@ -17,12 +17,15 @@ import {
   MoreHorizontal,
   Skull,
   Ghost,
+  LogIn,
+  Lock,
 } from "lucide-react";
 import { Roboto_Slab } from "next/font/google";
 import Link from "next/link";
 import React from "react";
 import CommentSection from "@/app/_components/comments/CommentSection";
 import { formatDistanceToNow } from "date-fns";
+import StoryContentClient from "@/app/_components/stories/StoryContentClient";
 
 const merriweather = Roboto_Slab({
   subsets: ["latin"],
@@ -35,9 +38,22 @@ const fetchStoryData = async (slug) => {
 
   try {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5050";
+    const { cookies } = await import('next/headers');
+    const cookieStore = await cookies();
+    const authToken = cookieStore.get('auth-token')?.value;
+    
+    const headers = {
+      'Cache-Control': 'no-cache',
+    };
+    
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
+    }
+    
     const res = await fetch(
       `${baseUrl}/api/v1/stories/slug/${slug}`,
       { 
+        headers,
         cache: "no-store",
         next: { revalidate: 0 }
       }
@@ -209,14 +225,8 @@ const Page = async ({ params }) => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {/* Main Content */}
           <div className="lg:col-span-3">
-            <Card className="bg-card/50 backdrop-blur-sm border-border mb-8">
-              <CardContent className="p-8">
-                <article
-                  className={`${merriweather.className} prose prose-invert prose-lg max-w-none leading-relaxed text-lg`}
-                  dangerouslySetInnerHTML={{ __html: story.content }}
-                />
-              </CardContent>
-            </Card>
+            {/* Story Content */}
+            <StoryContentClient initialStory={story} />
 
             {/* Media Evidence */}
             {story.media?.length > 0 && (
@@ -261,8 +271,8 @@ const Page = async ({ params }) => {
                       {cat.name}
                     </Badge>
                   ))}
-                  {story.tags?.map((tag) => (
-                    <Badge key={tag._id} variant="outline">
+                  {story.tags?.map((tag, index) => (
+                    <Badge key={tag._id || `tag-${index}`} variant="outline">
                       #{tag.name}
                     </Badge>
                   ))}

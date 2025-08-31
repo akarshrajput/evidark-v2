@@ -39,17 +39,17 @@ export default function TrendingAuthors({ authors, isLoading }) {
           Trending Authors
         </CardTitle>
       </CardHeader>
-      {/* <CardContent className="space-y-3">
+      <CardContent className="space-y-3">
         {authors?.data?.slice(0, 5).map((author, index) => (
           <Link
-            key={author._id}
+            key={author._id || `author-${index}`}
             href={`/user/${author.username}`}
-            className="flex items-center gap-3 p-2 rounded-lg hover:bg-red-500/5 transition-colors group"
+            className="flex items-center gap-3 p-2 rounded-lg hover:bg-secondary/50 transition-all duration-200 group border-none shadow-sm shadow-black/20 hover:shadow-md hover:shadow-black/30"
           >
             <div className="text-xs text-muted-foreground font-mono">
               #{index + 1}
             </div>
-            <Avatar className="w-8 h-8 border border-border group-hover:border-primary/50 transition-colors">
+            <Avatar className="w-8 h-8 border-none shadow-sm shadow-black/30 group-hover:shadow-md group-hover:shadow-black/40 transition-all duration-200">
               <AvatarImage src={author.photo} alt={author.name} />
               <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-700 text-white text-xs">
                 {author.name?.[0] || "A"}
@@ -65,7 +65,7 @@ export default function TrendingAuthors({ authors, isLoading }) {
             </div>
           </Link>
         ))}
-      </CardContent> */}
+      </CardContent>
     </Card>
   );
 }

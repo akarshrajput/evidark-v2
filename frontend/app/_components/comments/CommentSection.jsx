@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import Comment from "./Comment";
+import UserLink from "@/app/_components/ui/UserLink";
 
 export default function CommentSection({ storyId }) {
   const { user, isAuthenticated } = useAuth();

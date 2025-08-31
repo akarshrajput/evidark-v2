@@ -1,0 +1,245 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+/* @import url("https://fonts.googleapis.com/css2?family=Creepster&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nosifer&family=Chiller&family=Eater&display=swap"); */
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* Dark Spooky Theme - Professional */
+  --background: #0a0a0b;
+  --foreground: #e4e4e7;
+  --card: #111113;
+  --card-foreground: #e4e4e7;
+  --popover: #111113;
+  --popover-foreground: #e4e4e7;
+  --primary: #dc2626;
+  --primary-foreground: #fafafa;
+  --secondary: #1a1a1d;
+  --secondary-foreground: #e4e4e7;
+  --muted: #1a1a1d;
+  --muted-foreground: #a1a1aa;
+  --accent: #7c2d12;
+  --accent-foreground: #fafafa;
+  --destructive: #dc2626;
+  --destructive-foreground: #fafafa;
+  --border: #27272a;
+  --input: #1a1a1d;
+  --ring: #dc2626;
+
+  /* Spooky accent colors */
+  --blood-red: #8b0000;
+  --crimson: #dc143c;
+  --dark-purple: #301934;
+  --midnight: #0f0f23;
+  --shadow: #18181b;
+  --ember: #ff6b35;
+  --bone: #f8f8ff;
+}
+
+.dark {
+  --background: #0a0a0b;
+  --foreground: #e4e4e7;
+  --card: #111113;
+  --card-foreground: #e4e4e7;
+  --popover: #111113;
+  --popover-foreground: #e4e4e7;
+  --primary: #dc2626;
+  --primary-foreground: #fafafa;
+  --secondary: #1a1a1d;
+  --secondary-foreground: #e4e4e7;
+  --muted: #1a1a1d;
+  --muted-foreground: #a1a1aa;
+  --accent: #7c2d12;
+  --accent-foreground: #fafafa;
+  --destructive: #dc2626;
+  --destructive-foreground: #fafafa;
+  --border: #27272a;
+  --input: #1a1a1d;
+  --ring: #dc2626;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+  }
+
+  .spooky-glow {
+    @apply bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white shadow-lg hover:shadow-red-500/25 transition-all duration-300;
+  }
+
+  .evidark-logo {
+    font-family: "Creepster", cursive;
+    color: #dc2626;
+    text-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+    filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.3));
+  }
+
+  @keyframes spooky-gradient {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  .spooky-card {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.8) 0%,
+      rgba(127, 29, 29, 0.1) 50%,
+      rgba(0, 0, 0, 0.8) 100%
+    );
+    border: 1px solid rgba(220, 38, 38, 0.2);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+
+  .spooky-card:hover {
+    border-color: rgba(220, 38, 38, 0.4);
+    box-shadow: 0 8px 32px rgba(220, 38, 38, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .spooky-text {
+    background: linear-gradient(135deg, #ffffff 0%, #f87171 50%, #dc2626 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .shadow-text {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+
+  .horror-gradient {
+    background: linear-gradient(135deg, #0a0a0b 0%, #1a1a1d 50%, #7c2d12 100%);
+  }
+
+  .editor-content {
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .editor-content h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 2rem 0 1rem 0;
+    color: #dc2626;
+  }
+
+  .editor-content h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.75rem 0;
+    color: #e4e4e7;
+  }
+
+  .editor-content h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 1.25rem 0 0.5rem 0;
+    color: #a1a1aa;
+  }
+
+  .editor-content p {
+    margin: 1rem 0;
+    color: #e4e4e7;
+  }
+
+  .editor-content blockquote {
+    border-left: 4px solid #dc2626;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #a1a1aa;
+  }
+
+  .editor-content code {
+    background: #1a1a1d;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-family: "Fira Code", monospace;
+    color: #ff6b35;
+  }
+
+  .editor-content pre {
+    background: #111113;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  .editor-content ul,
+  .editor-content ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+  }
+
+  .editor-content li {
+    margin: 0.5rem 0;
+    color: #e4e4e7;
+  }
+}

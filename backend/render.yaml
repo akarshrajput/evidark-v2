@@ -1,0 +1,47 @@
+# EviDark Backend Service
+services:
+  - type: web
+    name: evidark-backend
+    env: node
+    region: singapore  # Choose the region closest to your users
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        fromDatabase:
+          name: evidark-mongodb
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRE
+        value: 30d
+      - key: FRONTEND_URL
+        value: https://your-frontend-url.com  # Update this with your frontend URL
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=1024  # Optimize memory usage
+    healthCheckPath: /api/health
+    autoDeploy: true
+    numInstances: 1
+
+# Database Configuration
+databases:
+  - name: evidark-mongodb
+    databaseName: evidark
+    user: evidark_user
+    plan: free
+    mongoVersion: 6.0
+    ipAllowList: []  # Restrict access to Render services only
+
+# Environment Variables Documentation
+# Required environment variables:
+# - MONGODB_URI: Automatically set by Render
+# - JWT_SECRET: Automatically generated
+# - NODE_ENV: Set to 'production'
+# - PORT: Set to 10000
+# - FRONTEND_URL: Your frontend application URL
+# - JWT_EXPIRE: Token expiration (default: 30d)

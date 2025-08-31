@@ -184,9 +184,31 @@ router.get('/username/:username', optionalAuth, async (req, res) => {
     // Check if current user is following this user
     let isFollowing = false;
     if (req.user) {
-      isFollowing = user.followers.some(follower => 
-        follower._id.toString() === req.user.id
+      console.log('Checking follow status for user:', req.user.id);
+      console.log('Target user followers:', user.followers.map(f => f._id.toString()));
+      
+      // Check both ways to ensure accuracy
+      const isInFollowers = user.followers.some(follower => 
+        follower._id.toString() === req.user.id.toString()
       );
+      
+      // Also check current user's following list as backup
+      const currentUserDoc = await User.findById(req.user.id).select('following');
+      const isInFollowing = currentUserDoc.following.some(followingId => 
+        followingId.toString() === user._id.toString()
+      );
+      
+      // Both should match, but prioritize the followers list
+      isFollowing = isInFollowers;
+      
+      console.log('Is in followers:', isInFollowers);
+      console.log('Is in following:', isInFollowing);
+      console.log('Final isFollowing result:', isFollowing);
+      
+      // Log warning if they don't match (indicates data inconsistency)
+      if (isInFollowers !== isInFollowing) {
+        console.warn('Follow status mismatch detected! Followers:', isInFollowers, 'Following:', isInFollowing);
+      }
     }
 
     // Get user's published stories
@@ -288,6 +310,46 @@ router.put('/:id', authenticate, [
     res.status(500).json({
       success: false,
       error: 'Server error updating user'
+    });
+  }
+});
+
+// @desc    Get follow status
+// @route   GET /api/v1/users/:id/follow-status
+// @access  Private
+router.get('/:id/follow-status', authenticate, async (req, res) => {
+  try {
+    if (req.params.id === req.user.id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Cannot check follow status for yourself'
+      });
+    }
+
+    const userToCheck = await User.findById(req.params.id);
+    if (!userToCheck) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+
+    const currentUser = await User.findById(req.user.id);
+    const isFollowing = currentUser.following.includes(userToCheck._id);
+
+    res.json({
+      success: true,
+      data: {
+        isFollowing,
+        followersCount: userToCheck.followers.length,
+        followingCount: userToCheck.following.length
+      }
+    });
+  } catch (error) {
+    console.error('Get follow status error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server error checking follow status'
     });
   }
 });
@@ -425,6 +487,64 @@ router.get('/:id/stats', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Server error fetching user stats'
+    });
+  }
+});
+
+// @desc    Get user followers
+// @route   GET /api/v1/users/:id/followers
+// @access  Public
+router.get('/:id/followers', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+      .populate('followers', 'name username photo role isOnline')
+      .select('followers');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: user.followers
+    });
+  } catch (error) {
+    console.error('Get followers error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server error fetching followers'
+    });
+  }
+});
+
+// @desc    Get user following
+// @route   GET /api/v1/users/:id/following
+// @access  Public
+router.get('/:id/following', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+      .populate('following', 'name username photo role isOnline')
+      .select('following');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: user.following
+    });
+  } catch (error) {
+    console.error('Get following error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server error fetching following'
     });
   }
 });

@@ -159,8 +159,8 @@ router.get('/:id', optionalAuth, async (req, res) => {
       });
     }
 
-    // Increment views
-    await story.incrementViews();
+    // Views are now tracked separately via the /view endpoint
+    // No automatic view increment on GET requests
 
     // Check if user has liked/bookmarked (if authenticated)
     let isLiked = false;
@@ -176,13 +176,28 @@ router.get('/:id', optionalAuth, async (req, res) => {
       isBookmarked = !!bookmark;
     }
 
+    // Return different data based on authentication status
+    const responseData = {
+      ...story.toObject(),
+      isLiked,
+      isBookmarked,
+      isAuthenticated: !!req.user
+    };
+
+    // If user is not authenticated, hide the full content
+    if (!req.user) {
+      delete responseData.content;
+      responseData.contentPreview = story.description || story.content?.substring(0, 200) + '...';
+      responseData.requiresAuth = true;
+    } else {
+      // User is authenticated, ensure content is included
+      responseData.content = story.content;
+      responseData.requiresAuth = false;
+    }
+
     res.json({
       success: true,
-      data: {
-        ...story.toObject(),
-        isLiked,
-        isBookmarked
-      }
+      data: responseData
     });
   } catch (error) {
     console.error('Get story error:', error);
@@ -225,8 +240,8 @@ router.get('/slug/:slug', optionalAuth, async (req, res) => {
     storyObj.commentsCount = Number(storyObj.commentsCount) || 0;
     storyObj.bookmarksCount = Number(storyObj.bookmarksCount) || 0;
 
-    // Increment views (don't await to avoid blocking response)
-    Story.updateOne({ _id: story._id }, { $inc: { views: 1 } }).exec();
+    // Views are now tracked separately via the /view endpoint
+    // No automatic view increment on GET requests
 
     // Check if user has liked/bookmarked (if authenticated)
     let isLiked = false;
@@ -242,13 +257,28 @@ router.get('/slug/:slug', optionalAuth, async (req, res) => {
       isBookmarked = !!bookmark;
     }
 
+    // Return different data based on authentication status
+    const responseData = {
+      ...storyObj,
+      isLiked,
+      isBookmarked,
+      isAuthenticated: !!req.user
+    };
+
+    // If user is not authenticated, hide the full content
+    if (!req.user) {
+      delete responseData.content;
+      responseData.contentPreview = story.description || story.content?.substring(0, 200) + '...';
+      responseData.requiresAuth = true;
+    } else {
+      // User is authenticated, ensure content is included
+      responseData.content = story.content;
+      responseData.requiresAuth = false;
+    }
+
     res.json({
       success: true,
-      data: {
-        ...storyObj,
-        isLiked,
-        isBookmarked
-      }
+      data: responseData
     });
   } catch (error) {
     console.error('Get story by slug error:', error);
@@ -692,6 +722,38 @@ router.post('/:id/comments', authenticate, [
     res.status(500).json({
       success: false,
       error: 'Server error adding comment'
+    });
+  }
+});
+
+// @desc    Track story view (authenticated users only, unique per user)
+// @route   POST /api/v1/stories/:id/view
+// @access  Private
+router.post('/:id/view', authenticate, async (req, res) => {
+  try {
+    const story = await Story.findById(req.params.id);
+
+    if (!story) {
+      return res.status(404).json({
+        success: false,
+        error: 'Story not found'
+      });
+    }
+
+    // Track unique view - only increments if user hasn't viewed before
+    const isNewView = await story.trackView(req.user.id);
+
+    res.json({
+      success: true,
+      message: isNewView ? 'New view tracked' : 'Already viewed',
+      views: story.views,
+      isNewView
+    });
+  } catch (error) {
+    console.error('Track view error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server error tracking view'
     });
   }
 });

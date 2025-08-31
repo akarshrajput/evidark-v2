@@ -87,6 +87,17 @@ const storySchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  viewedBy: [{
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    viewedAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
   likesCount: {
     type: Number,
     default: 0
@@ -163,6 +174,7 @@ storySchema.index({ createdAt: -1 });
 storySchema.index({ views: -1 });
 storySchema.index({ likesCount: -1 });
 storySchema.index({ 'engagement.totalInteractions': -1 });
+storySchema.index({ 'viewedBy.user': 1 });
 
 // Text index for search functionality
 storySchema.index({
@@ -228,7 +240,25 @@ storySchema.pre('save', function(next) {
   next();
 });
 
-// Method to increment views
+// Method to track unique view from a user
+storySchema.methods.trackView = async function(userId) {
+  // Check if user has already viewed this story
+  const hasViewed = this.viewedBy.some(view => 
+    view.user.toString() === userId.toString()
+  );
+  
+  if (!hasViewed) {
+    // Add user to viewedBy array and increment views
+    this.viewedBy.push({ user: userId });
+    this.views = this.viewedBy.length;
+    await this.save();
+    return true; // New view
+  }
+  
+  return false; // Already viewed
+};
+
+// Legacy method for backward compatibility
 storySchema.methods.incrementViews = async function() {
   this.views += 1;
   await this.save();

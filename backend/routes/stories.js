@@ -1,6 +1,7 @@
 import express from 'express';
 import { body, validationResult, query } from 'express-validator';
 import Story from '../models/Story.js';
+import User from '../models/User.js';
 import Like from '../models/Like.js';
 import Bookmark from '../models/Bookmark.js';
 import Comment from '../models/Comment.js';
@@ -113,6 +114,13 @@ router.post('/', authenticate, [
 
     const story = await Story.create(storyData);
     await story.populate('author', 'name username avatar verified');
+
+    // Increment user's story count
+    await User.findByIdAndUpdate(
+      req.user.id,
+      { $inc: { 'stats.storiesCount': 1 } },
+      { new: true }
+    );
 
     res.status(201).json({
       success: true,
@@ -382,6 +390,13 @@ router.delete('/:id', authenticate, async (req, res) => {
     }
 
     await Story.findByIdAndDelete(req.params.id);
+
+    // Decrement user's story count
+    await User.findByIdAndUpdate(
+      story.author,
+      { $inc: { 'stats.storiesCount': -1 } },
+      { new: true }
+    );
 
     res.json({
       success: true,
@@ -731,7 +746,7 @@ router.post('/:id/comments', authenticate, [
 // @access  Private
 router.post('/:id/view', authenticate, async (req, res) => {
   try {
-    const story = await Story.findById(req.params.id);
+    const story = await Story.findById(req.params.id).populate('author');
 
     if (!story) {
       return res.status(404).json({
@@ -740,8 +755,29 @@ router.post('/:id/view', authenticate, async (req, res) => {
       });
     }
 
+    // Don't track views for the author viewing their own story
+    if (story.author._id.toString() === req.user.id) {
+      return res.json({
+        success: true,
+        message: 'Own story view - not tracked',
+        views: story.views,
+        isNewView: false
+      });
+    }
+
     // Track unique view - only increments if user hasn't viewed before
     const isNewView = await story.trackView(req.user.id);
+
+    // If it's a new view, also increment the author's profile views
+    if (isNewView) {
+      console.log('Incrementing profile views for author:', story.author._id);
+      const updatedUser = await User.findByIdAndUpdate(
+        story.author._id,
+        { $inc: { 'stats.viewsReceived': 1 } },
+        { new: true }
+      );
+      console.log('Updated user stats:', updatedUser?.stats);
+    }
 
     res.json({
       success: true,

@@ -137,7 +137,7 @@ const Page = async ({ params }) => {
   if (!story) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Card className="bg-card/50 backdrop-blur-sm border-border text-center p-8">
+        <Card className="professional-card border-none text-center p-8">
           <Ghost className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
           <h2 className="text-2xl font-bold mb-2">Story Lost in the Void</h2>
           <p className="text-muted-foreground">
@@ -149,9 +149,9 @@ const Page = async ({ params }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-background/90">
+    <div className="min-h-screen bg-background">
       {/* Spooky Header */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-red-950/20 via-red-900/10 to-red-950/20 border-b border-border/50">
+      <div className="relative overflow-hidden bg-background/95 border-b border-border/50">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNkYzI2MjYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50"></div>
         <div className="container mx-auto px-6 py-12 relative">
           <div className="max-w-4xl mx-auto">
@@ -159,7 +159,7 @@ const Page = async ({ params }) => {
               <Skull className="w-3 h-3 mr-1" />
               EVIDARK ORIGINAL
             </Badge>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-red-400 via-red-500 to-red-600 bg-clip-text text-transparent leading-tight">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-foreground leading-tight">
               {story.title}
             </h1>
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
@@ -174,7 +174,7 @@ const Page = async ({ params }) => {
                     src={story.author?.photo}
                     alt={story.author?.name}
                   />
-                  <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-700 text-white">
+                  <AvatarFallback className="bg-secondary text-foreground">
                     {story.author?.name?.[0] || "A"}
                   </AvatarFallback>
                 </Avatar>

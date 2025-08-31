@@ -24,9 +24,9 @@ const inter = Inter({
 
 const page = () => {
   return (
-    <div className="min-h-screen horror-gradient flex items-center justify-center p-6">
+    <div className="min-h-screen bg-background flex items-center justify-center p-6">
       <div className="w-full max-w-md">
-        <Card className="bg-card/80 backdrop-blur-sm border-border shadow-2xl">
+        <Card className="professional-card border-none">
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center items-center gap-3">
               <Skull className="w-8 h-8 text-primary animate-pulse" />

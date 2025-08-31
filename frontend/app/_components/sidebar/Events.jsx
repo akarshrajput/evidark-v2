@@ -18,7 +18,7 @@ const safeFormatDate = (dateString) => {
 export default function Events({ events, isLoading }) {
   if (isLoading) {
     return (
-      <Card className="bg-card/50 backdrop-blur-sm border-border">
+      <Card className="professional-card border-none">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
             <Calendar className="w-5 h-5 text-blue-400" />
@@ -29,7 +29,7 @@ export default function Events({ events, isLoading }) {
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="p-3 rounded-lg bg-background/50 border border-border/50 animate-pulse"
+              className="p-3 rounded-lg bg-background/50 border-none shadow-sm shadow-black/40 animate-pulse"
             >
               <div className="h-4 bg-muted/20 rounded mb-2"></div>
               <div className="h-3 bg-muted/20 rounded mb-2"></div>
@@ -42,7 +42,7 @@ export default function Events({ events, isLoading }) {
   }
 
   return (
-    <Card className="bg-card/50 backdrop-blur-sm border-border">
+    <Card className="professional-card border-none">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg flex items-center gap-2">
           <Calendar className="w-5 h-5 text-blue-400" />

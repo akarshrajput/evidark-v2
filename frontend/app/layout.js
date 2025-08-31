@@ -1,18 +1,28 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Creepster, Nosifer } from "next/font/google";
 import "./globals.css";
 import Header from "./_components/main/Header";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/contexts/AuthContext";
 import QueryProvider from "./_components/providers/QueryProvider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const creepster = Creepster({
+  variable: "--font-creepster",
   subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
+const nosifer = Nosifer({
+  variable: "--font-nosifer",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
 });
 
 export const metadata = {
@@ -53,11 +63,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="dark">
       <body
-        className={`${geistSans.className} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground`}
+        className={`${inter.variable} ${creepster.variable} ${nosifer.variable} font-inter antialiased min-h-screen bg-background text-foreground`}
       >
         <QueryProvider>
           <AuthProvider>
-            <div className="fixed top-0 z-50 w-full bg-background/95 backdrop-blur-sm border-b border-border">
+            <div className="fixed top-0 z-50 w-full bg-background/95 backdrop-blur-sm border-none shadow-2xl shadow-black/50">
               <Header />
             </div>
             <div className="pt-16">{children}</div>
@@ -68,7 +78,8 @@ export default function RootLayout({ children }) {
                 style: {
                   background: "#111113",
                   color: "#e4e4e7",
-                  border: "1px solid #27272a",
+                  border: "none",
+                  boxShadow: "0 10px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(220, 38, 38, 0.2)",
                 },
               }}
             />

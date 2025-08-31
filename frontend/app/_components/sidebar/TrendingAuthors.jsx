@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function TrendingAuthors({ authors, isLoading }) {
   if (isLoading) {
     return (
-      <Card className="bg-card/50 backdrop-blur-sm border-border">
+      <Card className="professional-card border-none">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
             <Crown className="w-5 h-5 text-yellow-400" />
@@ -32,7 +32,7 @@ export default function TrendingAuthors({ authors, isLoading }) {
   }
 
   return (
-    <Card className="bg-card/50 backdrop-blur-sm border-border">
+    <Card className="professional-card border-none">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg flex items-center gap-2">
           <Crown className="w-5 h-5 text-yellow-400" />

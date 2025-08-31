@@ -35,7 +35,7 @@ export default function UserPage({ params }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen horror-gradient flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-white">Loading...</div>
       </div>
     );
@@ -46,7 +46,7 @@ export default function UserPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen horror-gradient">
+    <div className="min-h-screen bg-background">
       <UserProfile user={profileUser} currentUser={currentUser} isAuthenticated={isAuthenticated} />
     </div>
   );

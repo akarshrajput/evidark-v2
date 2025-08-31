@@ -66,7 +66,7 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
   };
 
   return (
-    <Card className="bg-card/50 backdrop-blur-sm border-border hover:bg-card/70 transition-all duration-300">
+    <Card className="professional-card border-none transition-all duration-200">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
@@ -76,7 +76,7 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
                 variant="ghost"
                 size="sm"
                 onClick={() => handleVote("up")}
-                className="h-8 w-8 p-0 hover:bg-primary/10 hover:text-primary"
+                className="h-8 w-8 p-0 hover:bg-primary/10 hover:text-primary border-none shadow-sm shadow-black/30 hover:shadow-md hover:shadow-black/40 transition-all duration-200"
               >
                 <ArrowUp className="w-4 h-4" />
               </Button>
@@ -87,7 +87,7 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
                 variant="ghost"
                 size="sm"
                 onClick={() => handleVote("down")}
-                className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+                className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive border-none shadow-sm shadow-black/30 hover:shadow-md hover:shadow-black/40 transition-all duration-200"
               >
                 <ArrowDown className="w-4 h-4" />
               </Button>
@@ -128,14 +128,14 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge
                   variant="outline"
-                  className="bg-red-500/10 text-red-400 border-red-500/20 capitalize"
+                  className="bg-red-500/10 text-red-400 border-none shadow-sm shadow-black/40 capitalize"
                 >
                   <Skull className="w-4 h-4" />
                   <span className="ml-1">{story.category}</span>
                 </Badge>
 
                 {story.tags?.slice(0, 3).map((tag) => (
-                  <Badge key={tag} variant="secondary" className="text-xs">
+                  <Badge key={tag} variant="secondary" className="text-xs border-none shadow-sm shadow-black/40">
                     {tag}
                   </Badge>
                 ))}
@@ -159,7 +159,7 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
               variant="ghost"
               size="sm"
               onClick={handleLike}
-              className="text-muted-foreground hover:text-red-400 hover:bg-red-400/10"
+              className="text-muted-foreground hover:text-red-400 hover:bg-red-400/10 border-none shadow-sm shadow-black/30 hover:shadow-md hover:shadow-black/40 transition-all duration-200"
             >
               <Heart className="w-4 h-4 mr-1" />
               {story.likesCount || 0}
@@ -169,7 +169,7 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-muted-foreground hover:text-blue-400 hover:bg-blue-400/10"
+                className="text-muted-foreground hover:text-blue-400 hover:bg-blue-400/10 border-none shadow-sm shadow-black/30 hover:shadow-md hover:shadow-black/40 transition-all duration-200"
               >
                 <MessageCircle className="w-4 h-4 mr-1" />
                 {story.commentsCount || 0}
@@ -180,7 +180,7 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
               variant="ghost"
               size="sm"
               onClick={handleBookmark}
-              className="text-muted-foreground hover:text-yellow-400 hover:bg-yellow-400/10"
+              className="text-muted-foreground hover:text-yellow-400 hover:bg-yellow-400/10 border-none shadow-sm shadow-black/30 hover:shadow-md hover:shadow-black/40 transition-all duration-200"
             >
               <Bookmark className="w-4 h-4 mr-1" />
               {story.bookmarksCount || 0}
@@ -189,7 +189,7 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
             <Button
               variant="ghost"
               size="sm"
-              className="text-muted-foreground hover:text-green-400 hover:bg-green-400/10"
+              className="text-muted-foreground hover:text-green-400 hover:bg-green-400/10 border-none shadow-sm shadow-black/30 hover:shadow-md hover:shadow-black/40 transition-all duration-200"
             >
               <Share2 className="w-4 h-4 mr-1" />
               Share

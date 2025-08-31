@@ -139,7 +139,7 @@ export default function UserProfile({ user, currentUser, isAuthenticated }) {
   return (
     <div className="container mx-auto px-6 py-8">
       {/* Profile Header */}
-      <Card className="bg-card/50 backdrop-blur-sm border-border mb-8">
+      <Card className="professional-card border-none mb-8">
         <CardContent className="p-8">
           <div className="flex flex-col md:flex-row items-start gap-6">
             {/* Avatar */}
@@ -276,7 +276,7 @@ export default function UserProfile({ user, currentUser, isAuthenticated }) {
         <TabsContent value="overview" className="mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Stats Cards */}
-            <Card className="bg-card/50 backdrop-blur-sm border-border">
+            <Card className="professional-card border-none">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-primary" />
@@ -306,7 +306,7 @@ export default function UserProfile({ user, currentUser, isAuthenticated }) {
             </Card>
 
             {/* Account Info */}
-            <Card className="bg-card/50 backdrop-blur-sm border-border">
+            <Card className="professional-card border-none">
               <CardHeader>
                 <CardTitle>Account Details</CardTitle>
               </CardHeader>
@@ -337,7 +337,7 @@ export default function UserProfile({ user, currentUser, isAuthenticated }) {
         </TabsContent>
 
         <TabsContent value="stories" className="mt-6">
-          <Card className="bg-card/50 backdrop-blur-sm border-border">
+          <Card className="professional-card border-none">
             <CardHeader>
               <CardTitle>Published Stories</CardTitle>
             </CardHeader>
@@ -350,7 +350,7 @@ export default function UserProfile({ user, currentUser, isAuthenticated }) {
         </TabsContent>
 
         <TabsContent value="followers" className="mt-6">
-          <Card className="bg-card/50 backdrop-blur-sm border-border">
+          <Card className="professional-card border-none">
             <CardHeader>
               <CardTitle>Followers ({user.followersCount || 0})</CardTitle>
             </CardHeader>
@@ -363,7 +363,7 @@ export default function UserProfile({ user, currentUser, isAuthenticated }) {
         </TabsContent>
 
         <TabsContent value="following" className="mt-6">
-          <Card className="bg-card/50 backdrop-blur-sm border-border">
+          <Card className="professional-card border-none">
             <CardHeader>
               <CardTitle>Following ({user.followingCount || 0})</CardTitle>
             </CardHeader>

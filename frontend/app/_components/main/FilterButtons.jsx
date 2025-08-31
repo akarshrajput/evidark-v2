@@ -21,10 +21,10 @@ export default function FilterButtons({ activeFilter, onFilterChange }) {
             variant="outline"
             size="sm"
             onClick={() => onFilterChange(key)}
-            className={`transition-all duration-200 ${
+            className={`transition-all duration-200 border-none ${
               activeFilter === key
                 ? "spooky-glow"
-                : "border-border hover:border-red-600/50 hover:bg-red-600/10 spooky-card"
+                : "shadow-md shadow-black/40 hover:shadow-lg hover:shadow-black/50 hover:bg-red-600/10 bg-secondary/50"
             }`}
           >
             <Icon className="w-3 h-3 mr-1" />

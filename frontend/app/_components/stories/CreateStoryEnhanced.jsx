@@ -251,7 +251,7 @@ const CreateStoryEnhanced = () => {
           {/* Main Content */}
           <div className="xl:col-span-3 space-y-6">
             {/* Title & Basic Info */}
-            <Card className="bg-card/50 backdrop-blur-sm border-border">
+<Card className="professional-card border-none">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <BookOpen className="w-6 h-6 text-red-500" />
@@ -353,7 +353,7 @@ const CreateStoryEnhanced = () => {
             </Card>
 
             {/* Content Editor */}
-            <Card className="bg-card/50 backdrop-blur-sm border-border">
+            <Card className="professional-card border-none">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <PenTool className="w-6 h-6 text-red-500" />
@@ -381,7 +381,7 @@ const CreateStoryEnhanced = () => {
             </Card>
 
             {/* Content Warnings */}
-            <Card className="bg-card/50 backdrop-blur-sm border-border">
+            <Card className="professional-card border-none">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <AlertTriangle className="w-5 h-5 text-orange-500" />
@@ -422,7 +422,7 @@ const CreateStoryEnhanced = () => {
           {/* Sidebar */}
           <div className="xl:col-span-1 space-y-6">
             {/* Publishing Options */}
-            <Card className="bg-card/50 backdrop-blur-sm border-border">
+            <Card className="professional-card border-none">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Save className="w-5 h-5 text-green-500" />
@@ -478,7 +478,7 @@ const CreateStoryEnhanced = () => {
 
             {/* Admin Only Features */}
             {isAdmin && (
-              <Card className="bg-gradient-to-br from-yellow-500/5 to-orange-500/5 border-yellow-500/20">
+              <Card className="professional-card border-none bg-gradient-to-br from-yellow-500/5 to-orange-500/5">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-yellow-400">
                     <Crown className="w-5 h-5" />
@@ -520,7 +520,7 @@ const CreateStoryEnhanced = () => {
             )}
 
             {/* Tags */}
-            <Card className="bg-card/50 backdrop-blur-sm border-border">
+            <Card className="professional-card border-none">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Zap className="w-5 h-5 text-blue-500" />

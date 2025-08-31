@@ -16,7 +16,7 @@ export default function ChatPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900/20 to-black flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-white">Loading...</div>
       </div>
     );
@@ -27,7 +27,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="bg-gradient-to-br from-gray-900 via-red-900/20 to-black">
+    <div className="bg-background">
       <ChatInterface />
     </div>
   );

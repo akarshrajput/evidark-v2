@@ -449,15 +449,15 @@ export default function ChatInterface() {
   }
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-gray-900 via-red-900/20 to-black mt-16">
+    <div className="fixed inset-0 bg-background mt-16">
       <div className="h-full flex flex-col">
         <div className="flex-1 overflow-hidden">
           <div className="h-full max-w-7xl mx-auto p-4">
             <div className="grid grid-cols-12 gap-4 h-full">
               {/* Chat List Sidebar */}
               <div className="col-span-4 lg:col-span-3">
-                <Card className="h-full bg-black/40 border-red-900/30 backdrop-blur-sm flex flex-col">
-                  <div className="p-4 border-b border-red-900/30">
+                <Card className="h-full professional-card border-none flex flex-col">
+                  <div className="p-4 border-b border-border/20">
                     <div className="flex items-center justify-between mb-4">
                       <h2 className="text-xl font-bold text-red-100 font-creepster">
                         Dark Chats
@@ -465,7 +465,7 @@ export default function ChatInterface() {
                       <Button
                         size="sm"
                         onClick={() => setShowUserSearch(true)}
-                        className="bg-red-900/50 hover:bg-red-800/50 text-red-100 border-red-700/50"
+                        className="border-none shadow-md shadow-black/40 hover:shadow-lg hover:shadow-black/50 bg-secondary/50 hover:bg-secondary/70 transition-all duration-200"
                       >
                         <Plus className="h-4 w-4" />
                       </Button>
@@ -475,7 +475,7 @@ export default function ChatInterface() {
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                       <Input
                         placeholder="Search conversations..."
-                        className="pl-10 bg-gray-900/50 border-red-900/30 text-red-100 placeholder-gray-500"
+                        className="pl-10 bg-background/50 border-none shadow-sm shadow-black/30 text-foreground placeholder-muted-foreground"
                       />
                     </div>
                   </div>
@@ -495,9 +495,9 @@ export default function ChatInterface() {
               {/* Main Chat Area */}
               <div className="col-span-8 lg:col-span-9">
                 {activeChat ? (
-                  <Card className="h-full bg-black/40 border-red-900/30 backdrop-blur-sm flex flex-col p-0 overflow-hidden">
+                  <Card className="h-full professional-card border-none flex flex-col p-0 overflow-hidden">
                     {/* Chat Header - Fixed */}
-                    <div className="flex-shrink-0 p-4 border-b border-red-900/30 bg-black/20 backdrop-blur-sm">
+                    <div className="flex-shrink-0 p-4 border-b border-border/20 bg-background/50 backdrop-blur-sm">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
                           <OnlineAvatar
@@ -581,7 +581,7 @@ export default function ChatInterface() {
                     </div>
 
                     {/* Message Input - Fixed at Bottom */}
-                    <div className="flex-shrink-0 p-4 border-t border-red-900/30 bg-black/20 backdrop-blur-sm">
+                    <div className="flex-shrink-0 p-4 border-t border-border/20 bg-background/50 backdrop-blur-sm">
                       <MessageInput
                         onSendMessage={handleSendMessage}
                         socket={socket}
@@ -590,7 +590,7 @@ export default function ChatInterface() {
                     </div>
                   </Card>
                 ) : (
-                  <Card className="h-full bg-black/40 border-red-900/30 backdrop-blur-sm flex items-center justify-center">
+                  <Card className="h-full professional-card border-none flex items-center justify-center">
                     <div className="text-center">
                       <MessageCircle className="h-16 w-16 mx-auto mb-4 text-red-500/50" />
                       <h3 className="text-xl font-semibold text-red-100 mb-2 font-creepster">
@@ -602,7 +602,7 @@ export default function ChatInterface() {
                       </p>
                       <Button
                         onClick={() => setShowUserSearch(true)}
-                        className="bg-red-900/50 hover:bg-red-800/50 text-red-100 border-red-700/50"
+                        className="border-none shadow-md shadow-black/40 hover:shadow-lg hover:shadow-black/50 bg-secondary/50 hover:bg-secondary/70 transition-all duration-200"
                       >
                         <Plus className="h-4 w-4 mr-2" />
                         Start New Chat

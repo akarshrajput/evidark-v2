@@ -64,7 +64,7 @@ const Header = () => {
   };
 
   return (
-    <header className="px-6 py-3 flex items-center justify-between w-full border-b border-border/50 bg-background/95 backdrop-blur-md">
+    <header className="px-6 py-3 flex items-center justify-between w-full border-none bg-background/95 backdrop-blur-md shadow-2xl shadow-black/50">
       <div className="flex items-center gap-8">
         <Logo />
 
@@ -74,7 +74,7 @@ const Header = () => {
             variant="ghost"
             size="sm"
             asChild
-            className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200"
+            className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 border-none shadow-sm shadow-black/20 hover:shadow-md hover:shadow-black/30"
           >
             <Link href="/" className="flex items-center gap-2">
               <Home className="w-4 h-4" />
@@ -86,7 +86,7 @@ const Header = () => {
             variant="ghost"
             size="sm"
             asChild
-            className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200"
+            className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 border-none shadow-sm shadow-black/20 hover:shadow-md hover:shadow-black/30"
           >
             <Link href="/trending" className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4" />
@@ -98,7 +98,7 @@ const Header = () => {
             variant="ghost"
             size="sm"
             asChild
-            className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200"
+            className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 border-none shadow-sm shadow-black/20 hover:shadow-md hover:shadow-black/30"
           >
             <Link href="/categories" className="flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
@@ -110,7 +110,7 @@ const Header = () => {
             variant="ghost"
             size="sm"
             asChild
-            className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200"
+            className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 border-none shadow-sm shadow-black/20 hover:shadow-md hover:shadow-black/30"
           >
             <Link href="/community" className="flex items-center gap-2">
               <Users className="w-4 h-4" />
@@ -123,7 +123,7 @@ const Header = () => {
               variant="ghost"
               size="sm"
               asChild
-              className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200"
+              className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 border-none shadow-sm shadow-black/20 hover:shadow-md hover:shadow-black/30"
             >
               <Link href="/chat" className="flex items-center gap-2">
                 <MessageCircle className="w-4 h-4" />
@@ -147,7 +147,7 @@ const Header = () => {
                 asChild
                 variant="outline"
                 size="sm"
-                className="border-yellow-500/40 text-yellow-400 hover:text-yellow-300"
+                className="border-none text-yellow-400 hover:text-yellow-300 shadow-md shadow-black/40 hover:shadow-lg hover:shadow-black/50 bg-yellow-500/10 hover:bg-yellow-500/20"
               >
                 <Link href="/admin" className="flex items-center gap-2">
                   <Crown className="w-4 h-4" />
@@ -159,7 +159,7 @@ const Header = () => {
             <Button
               asChild
               size="sm"
-              className="spooky-glow bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white border-0 shadow-lg shadow-red-500/25 transition-all duration-300"
+              className="spooky-glow border-none"
             >
               <Link href="/create" className="flex items-center gap-2">
                 <Skull className="w-4 h-4" />
@@ -172,7 +172,7 @@ const Header = () => {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-10 w-10 rounded-full border-2 border-primary/30 hover:border-primary/60 transition-all duration-200"
+                  className="relative h-10 w-10 rounded-full border-none shadow-md shadow-black/40 hover:shadow-lg hover:shadow-black/50 transition-all duration-200"
                 >
                   <OnlineAvatar
                     src={user?.avatar}
@@ -191,7 +191,7 @@ const Header = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-56 bg-card/95 backdrop-blur-md border-border/50"
+                className="w-56 bg-card/95 backdrop-blur-md border-none shadow-2xl shadow-black/60"
                 align="end"
                 forceMount
               >
@@ -280,7 +280,7 @@ const Header = () => {
               asChild
               variant="ghost"
               size="sm"
-              className="text-muted-foreground hover:text-foreground border border-border/50 hover:border-border transition-all duration-200"
+              className="text-muted-foreground hover:text-foreground border-none shadow-md shadow-black/40 hover:shadow-lg hover:shadow-black/50 bg-secondary/50 hover:bg-secondary/80 transition-all duration-200"
             >
               <Link href="/login" className="flex items-center gap-2">
                 <LogIn className="w-4 h-4" />
@@ -291,7 +291,7 @@ const Header = () => {
             <Button
               asChild
               size="sm"
-              className="spooky-glow bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white border-0 shadow-lg shadow-red-500/25 transition-all duration-300"
+              className="spooky-glow border-none"
             >
               <Link href="/login" className="flex items-center gap-2">
                 <Ghost className="w-4 h-4" />
@@ -302,7 +302,7 @@ const Header = () => {
         )}
 
         {/* Mobile Menu Button */}
-        <Button variant="ghost" size="sm" className="lg:hidden">
+        <Button variant="ghost" size="sm" className="lg:hidden border-none shadow-sm shadow-black/20 hover:shadow-md hover:shadow-black/30">
           <Menu className="w-5 h-5" />
         </Button>
       </div>

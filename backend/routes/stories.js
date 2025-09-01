@@ -2,10 +2,11 @@ import express from 'express';
 import { body, validationResult, query } from 'express-validator';
 import Story from '../models/Story.js';
 import User from '../models/User.js';
+import Comment from '../models/Comment.js';
 import Like from '../models/Like.js';
 import Bookmark from '../models/Bookmark.js';
-import Comment from '../models/Comment.js';
 import { authenticate, optionalAuth, authorize } from '../middleware/auth.js';
+import { createLikeNotification, createCommentNotification } from '../utils/notificationHelper.js';
 import { APIFeatures } from '../utils/apiFeatures.js';
 
 const router = express.Router();
@@ -495,7 +496,7 @@ router.delete('/:id', authenticate, async (req, res) => {
 // @access  Private
 router.post('/:id/like', authenticate, async (req, res) => {
   try {
-    const story = await Story.findById(req.params.id);
+    const story = await Story.findById(req.params.id).populate('author', 'name');
 
     if (!story) {
       return res.status(404).json({
@@ -511,9 +512,17 @@ router.post('/:id/like', authenticate, async (req, res) => {
     });
 
     if (existingLike) {
-      // Unlike
+      // Unlike - remove like and update stats
       await Like.findByIdAndDelete(existingLike._id);
+      
+      // Update story engagement
       await story.updateEngagement();
+      
+      // Update user stats - decrease likes given for current user and likes received for story author
+      await User.findByIdAndUpdate(req.user.id, { $inc: { 'stats.likesGiven': -1 } });
+      if (story.author._id.toString() !== req.user.id) {
+        await User.findByIdAndUpdate(story.author._id, { $inc: { 'stats.likesReceived': -1 } });
+      }
       
       res.json({
         success: true,
@@ -522,13 +531,24 @@ router.post('/:id/like', authenticate, async (req, res) => {
         likesCount: story.likesCount
       });
     } else {
-      // Like
+      // Like - create like and update stats
       await Like.create({
         user: req.user.id,
         target: story._id,
         targetType: 'Story'
       });
+      
+      // Update story engagement
       await story.updateEngagement();
+      
+      // Update user stats - increase likes given for current user and likes received for story author
+      await User.findByIdAndUpdate(req.user.id, { $inc: { 'stats.likesGiven': 1 } });
+      if (story.author._id.toString() !== req.user.id) {
+        await User.findByIdAndUpdate(story.author._id, { $inc: { 'stats.likesReceived': 1 } });
+        
+        // Create like notification (only if user is not liking their own story)
+        await createLikeNotification(req.user.id, story.author._id, story._id);
+      }
       
       res.json({
         success: true,
@@ -803,8 +823,17 @@ router.post('/:id/comments', authenticate, [
       }
     }
 
-    // Skip engagement update to avoid validation errors
-    // The comment count will be updated when needed elsewhere
+    // Update user stats - increase comments received for story author
+    const story = await Story.findById(req.params.id);
+    if (story && story.author.toString() !== req.user.id) {
+      await User.findByIdAndUpdate(story.author, { $inc: { 'stats.commentsReceived': 1 } });
+      
+      // Create comment notification (only if user is not commenting on their own story)
+      await createCommentNotification(req.user.id, story.author, story._id, comment._id);
+    }
+
+    // Update story engagement
+    await story.updateEngagement();
 
     res.status(201).json({
       success: true,

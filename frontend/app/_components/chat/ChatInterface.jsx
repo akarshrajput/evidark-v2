@@ -25,7 +25,6 @@ import {
 import ChatList from "./ChatList";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
-import UserSearch from "./UserSearch";
 
 export default function ChatInterface() {
   const { user, isAuthenticated } = useAuth();
@@ -35,7 +34,6 @@ export default function ChatInterface() {
   const [messages, setMessages] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState(new Set());
   const [typingUsers, setTypingUsers] = useState(new Set());
-  const [showUserSearch, setShowUserSearch] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Handle URL parameters for direct chat access
@@ -54,7 +52,7 @@ export default function ChatInterface() {
   // Initialize socket connection
   useEffect(() => {
     if (user?.id) {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const newSocket = io(
         process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5050",
         {
@@ -70,12 +68,7 @@ export default function ChatInterface() {
       );
 
       newSocket.on("connect", () => {
-        console.log(
-          "🔌 SOCKET CONNECTED - User:",
-          user.name,
-          "ID:",
-          user.id
-        );
+        console.log("🔌 SOCKET CONNECTED - User:", user.name, "ID:", user.id);
         setSocket(newSocket);
 
         // Rejoin active chat room if exists
@@ -149,13 +142,18 @@ export default function ChatInterface() {
                 "🆕 New chat detected from incoming message, fetching details"
               );
               // Fetch chat details for new conversation
-              const token = localStorage.getItem('token');
-              fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5050'}/api/v1/chats/${message.chat}`, {
-                headers: {
-                  'Authorization': `Bearer ${token}`,
-                  'Content-Type': 'application/json'
+              const token = localStorage.getItem("token");
+              fetch(
+                `${
+                  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5050"
+                }/api/v1/chats/${message.chat}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                  },
                 }
-              })
+              )
                 .then((res) => res.json())
                 .then((data) => {
                   if (data.chat) {
@@ -170,21 +168,13 @@ export default function ChatInterface() {
       });
 
       newSocket.on("user_typing", ({ userId, userName, chatId }) => {
-        if (
-          activeChat &&
-          chatId === activeChat._id &&
-          userId !== user.id
-        ) {
+        if (activeChat && chatId === activeChat._id && userId !== user.id) {
           setTypingUsers((prev) => new Set([...prev, userName]));
         }
       });
 
       newSocket.on("user_stop_typing", ({ userId, userName, chatId }) => {
-        if (
-          activeChat &&
-          chatId === activeChat._id &&
-          userId !== user.id
-        ) {
+        if (activeChat && chatId === activeChat._id && userId !== user.id) {
           setTypingUsers((prev) => {
             const newSet = new Set(prev);
             newSet.delete(userName);
@@ -225,13 +215,18 @@ export default function ChatInterface() {
 
   const loadChats = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5050'}/api/v1/chats`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5050"
+        }/api/v1/chats`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
-      });
+      );
       const data = await response.json();
       setChats(data.chats || []);
       setLoading(false);
@@ -244,13 +239,18 @@ export default function ChatInterface() {
   const loadMessages = async (chatId) => {
     try {
       console.log("📥 LOADING MESSAGES for chat:", chatId);
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5050'}/api/v1/chats/${chatId}/messages`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5050"
+        }/api/v1/chats/${chatId}/messages`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
-      });
+      );
 
       if (!response.ok) {
         console.error(
@@ -263,13 +263,13 @@ export default function ChatInterface() {
 
       const data = await response.json();
       console.log("✅ MESSAGES LOADED:", {
-        count: data.messages?.length || 0,
-        messages: data.messages
+        count: data.data?.length || 0,
+        messages: data.data
           ?.slice(0, 3)
           .map((m) => ({ id: m._id, content: m.content.substring(0, 20) })),
       });
 
-      setMessages(data.messages || []);
+      setMessages(data.data || []);
     } catch (error) {
       console.error("Error loading messages:", error);
     }
@@ -384,19 +384,24 @@ export default function ChatInterface() {
   ) => {
     try {
       // First check if chat already exists
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5050'}/api/v1/chats`, {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          type,
-          participantIds,
-          name: "",
-        }),
-      });
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5050"
+        }/api/v1/chats`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            type,
+            participantIds,
+            name: "",
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -404,7 +409,6 @@ export default function ChatInterface() {
         // Chat created successfully - set as active but don't add to list yet
         setActiveChat(data.chat);
         setMessages([]); // Clear messages for new chat
-        setShowUserSearch(false);
 
         if (socket) {
           socket.emit("join_chat", { chatId: data.chat._id });
@@ -418,7 +422,6 @@ export default function ChatInterface() {
           // If chat exists but not in our list, load it
           loadChats();
         }
-        setShowUserSearch(false);
       }
     } catch (error) {
       console.error("Error creating chat:", error);
@@ -457,25 +460,18 @@ export default function ChatInterface() {
               {/* Chat List Sidebar */}
               <div className="col-span-4 lg:col-span-3">
                 <Card className="h-full professional-card border-none flex flex-col">
-                  <div className="p-4 border-b border-border/20">
+                  <div className="p-4">
                     <div className="flex items-center justify-between mb-4">
                       <h2 className="text-xl font-bold text-red-100 font-creepster">
                         Dark Chats
                       </h2>
-                      <Button
-                        size="sm"
-                        onClick={() => setShowUserSearch(true)}
-                        className="border-none shadow-md shadow-black/40 hover:shadow-lg hover:shadow-black/50 bg-secondary/50 hover:bg-secondary/70 transition-all duration-200"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
                     </div>
 
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                       <Input
                         placeholder="Search conversations..."
-                        className="pl-10 bg-background/50 border-none shadow-sm shadow-black/30 text-foreground placeholder-muted-foreground"
+                        className="pl-10 bg-background/50 text-foreground placeholder-muted-foreground"
                       />
                     </div>
                   </div>
@@ -497,7 +493,7 @@ export default function ChatInterface() {
                 {activeChat ? (
                   <Card className="h-full professional-card border-none flex flex-col p-0 overflow-hidden">
                     {/* Chat Header - Fixed */}
-                    <div className="flex-shrink-0 p-4 border-b border-border/20 bg-background/50 backdrop-blur-sm">
+                    <div className="flex-shrink-0 p-4 bg-background/50 backdrop-blur-sm">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
                           <OnlineAvatar
@@ -581,7 +577,7 @@ export default function ChatInterface() {
                     </div>
 
                     {/* Message Input - Fixed at Bottom */}
-                    <div className="flex-shrink-0 p-4 border-t border-border/20 bg-background/50 backdrop-blur-sm">
+                    <div className="flex-shrink-0 p-4 bg-background/50 backdrop-blur-sm">
                       <MessageInput
                         onSendMessage={handleSendMessage}
                         socket={socket}
@@ -597,16 +593,8 @@ export default function ChatInterface() {
                         Welcome to Dark Chat
                       </h3>
                       <p className="text-gray-400 mb-4">
-                        Select a conversation or start a new one to begin
-                        chatting
+                        Select a conversation to begin chatting
                       </p>
-                      <Button
-                        onClick={() => setShowUserSearch(true)}
-                        className="border-none shadow-md shadow-black/40 hover:shadow-lg hover:shadow-black/50 bg-secondary/50 hover:bg-secondary/70 transition-all duration-200"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Start New Chat
-                      </Button>
                     </div>
                   </Card>
                 )}
@@ -615,14 +603,6 @@ export default function ChatInterface() {
           </div>
         </div>
       </div>
-
-      {/* User Search Modal */}
-      {showUserSearch && (
-        <UserSearch
-          onClose={() => setShowUserSearch(false)}
-          onCreateChat={handleCreateChat}
-        />
-      )}
     </div>
   );
 }

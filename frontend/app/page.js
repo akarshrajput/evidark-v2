@@ -265,7 +265,7 @@ export default function MainPage() {
                 <Users className="w-12 h-12 text-blue-400 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No Stories from Following</h3>
                 <p className="text-muted-foreground mb-4">
-                  You're not following anyone yet, or the people you follow haven't published any stories.
+                  You&apos;re not following anyone yet, or the people you follow haven&apos;t published any stories.
                 </p>
                 <Button
                   variant="outline"

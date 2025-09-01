@@ -17,6 +17,7 @@ import commentRoutes from './routes/comments.js';
 import statsRoutes from './routes/stats.js';
 import eventsRoutes from './routes/events.js';
 import healthRoutes from './routes/health.js';
+import notificationRoutes from './routes/notifications.js';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler.js';
@@ -27,6 +28,7 @@ import connectDB from './config/database.js';
 
 // Import socket handlers
 import { initSocket } from './socket/socketHandlers.js';
+import { setSocketIO } from './utils/notificationHelper.js';
 
 // Load environment variables
 dotenv.config();
@@ -85,14 +87,18 @@ app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/comments', commentRoutes);
 app.use('/api/v1/stats', statsRoutes);
 app.use('/api/v1/events', eventsRoutes);
+app.use('/api/v1/notifications', notificationRoutes);
 
 // Error handling middleware
 app.use(notFound);
 app.use(errorHandler);
 
-// Create HTTP server and initialize Socket.IO
+// Create HTTP server and Initialize Socket.IO
 const server = createServer(app);
 const io = initSocket(server);
+
+// Set socket instance for notifications
+setSocketIO(io);
 
 // Make io accessible to routes
 app.set('io', io);

@@ -3,6 +3,7 @@ import { body, validationResult, query } from 'express-validator';
 import User from '../models/User.js';
 import Story from '../models/Story.js';
 import { authenticate, optionalAuth, authorize } from '../middleware/auth.js';
+import { createFollowNotification } from '../utils/notificationHelper.js';
 
 const router = express.Router();
 
@@ -401,6 +402,9 @@ router.post('/:id/follow', authenticate, async (req, res) => {
       userToFollow.followers.push(currentUser._id);
 
       await Promise.all([currentUser.save(), userToFollow.save()]);
+
+      // Create follow notification
+      await createFollowNotification(currentUser._id, userToFollow._id);
 
       res.json({
         success: true,

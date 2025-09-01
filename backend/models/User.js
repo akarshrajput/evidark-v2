@@ -114,6 +114,7 @@ const userSchema = new mongoose.Schema({
   stats: {
     storiesCount: { type: Number, default: 0 },
     likesReceived: { type: Number, default: 0 },
+    likesGiven: { type: Number, default: 0 },
     commentsReceived: { type: Number, default: 0 },
     viewsReceived: { type: Number, default: 0 },
     followersCount: { type: Number, default: 0 },

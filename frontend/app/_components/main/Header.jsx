@@ -1,12 +1,13 @@
-'use client';
+"use client";
 import React from "react";
 import Logo from "./Logo";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+// import OnlineAvatar from "../ui/OnlineAvatar";
+import NotificationBell from "../notifications/NotificationBell";
 import Search from "./Search";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import OnlineAvatar from "@/app/_components/ui/OnlineAvatar";
 import { Badge } from "@/components/ui/badge";
 import {
   PenTool,
@@ -127,7 +128,7 @@ const Header = () => {
             >
               <Link href="/chat" className="flex items-center gap-2">
                 <MessageCircle className="w-4 h-4" />
-                <span className="font-medium">Dark Chat</span>
+                <span className="font-medium">Chat</span>
               </Link>
             </Button>
           )}
@@ -141,6 +142,9 @@ const Header = () => {
 
         {user ? (
           <div className="flex items-center gap-3">
+            {/* Notification Bell */}
+            <NotificationBell />
+
             {/* Admin Button - visible only to admins */}
             {user?.role === "admin" && (
               <Button
@@ -156,11 +160,7 @@ const Header = () => {
               </Button>
             )}
             {/* Write Story Button - Available to all users */}
-            <Button
-              asChild
-              size="sm"
-              className="spooky-glow border-none"
-            >
+            <Button asChild size="sm" className="spooky-glow border-none">
               <Link href="/create" className="flex items-center gap-2">
                 <Skull className="w-4 h-4" />
                 <span className="font-medium">Write Tale</span>
@@ -174,15 +174,12 @@ const Header = () => {
                   variant="ghost"
                   className="relative h-10 w-10 rounded-full border-none shadow-md shadow-black/40 hover:shadow-lg hover:shadow-black/50 transition-all duration-200"
                 >
-                  <OnlineAvatar
-                    src={user?.avatar}
-                    alt={user?.name}
-                    fallback={user?.name?.[0] ||
-                      user?.email?.[0] ||
-                      "U"}
-                    isOnline={true}
-                    size="sm"
-                  />
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={user?.avatar} alt={user?.name} />
+                    <AvatarFallback className="bg-red-900/50 text-red-100">
+                      {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
                   {user?.role === "admin" && (
                     <div className="absolute -top-1 -right-1 bg-yellow-500 rounded-full p-1">
                       <Crown className="w-2 h-2 text-black" />
@@ -206,9 +203,7 @@ const Header = () => {
                         className="text-xs px-1.5 py-0.5"
                       >
                         {getRoleIcon(user?.role)}
-                        <span className="ml-1 capitalize">
-                          {user?.role}
-                        </span>
+                        <span className="ml-1 capitalize">{user?.role}</span>
                       </Badge>
                     </div>
                     <p className="text-xs leading-none text-muted-foreground">
@@ -219,7 +214,7 @@ const Header = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link
-                    href={`/user/${user.username}`}
+                    href={`/user/${user?.username}`}
                     className="flex items-center gap-2 cursor-pointer"
                   >
                     <User className="w-4 h-4" />
@@ -250,7 +245,7 @@ const Header = () => {
                     className="flex items-center gap-2 cursor-pointer"
                   >
                     <MessageCircle className="w-4 h-4" />
-                    <span>Dark Chat</span>
+                    <span>Chat</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -264,7 +259,7 @@ const Header = () => {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   onClick={logout}
                   className="flex items-center gap-2 cursor-pointer text-red-400 hover:text-red-300"
                 >
@@ -275,34 +270,28 @@ const Header = () => {
             </DropdownMenu>
           </div>
         ) : (
-          <div className="flex items-center gap-3">
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground hover:text-foreground border-none shadow-md shadow-black/40 hover:shadow-lg hover:shadow-black/50 bg-secondary/50 hover:bg-secondary/80 transition-all duration-200"
-            >
+          <div className="flex items-center gap-2">
+            <Button asChild variant="ghost" size="sm">
               <Link href="/login" className="flex items-center gap-2">
                 <LogIn className="w-4 h-4" />
-                <span className="font-medium">Sign In</span>
+                <span>Sign In</span>
               </Link>
             </Button>
-
-            <Button
-              asChild
-              size="sm"
-              className="spooky-glow border-none"
-            >
-              <Link href="/login" className="flex items-center gap-2">
-                <Ghost className="w-4 h-4" />
-                <span className="font-medium">Join the Darkness</span>
+            <Button asChild size="sm">
+              <Link href="/register" className="flex items-center gap-2">
+                <UserPlus className="w-4 h-4" />
+                <span>Sign Up</span>
               </Link>
             </Button>
           </div>
         )}
 
         {/* Mobile Menu Button */}
-        <Button variant="ghost" size="sm" className="lg:hidden border-none shadow-sm shadow-black/20 hover:shadow-md hover:shadow-black/30">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="lg:hidden border-none shadow-sm shadow-black/20 hover:shadow-md hover:shadow-black/30"
+        >
           <Menu className="w-5 h-5" />
         </Button>
       </div>

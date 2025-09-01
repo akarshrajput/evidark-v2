@@ -340,3 +340,6 @@ export const getIO = () => {
   }
   return io;
 };
+
+// Return the io instance at the end of initSocket
+export { io };

@@ -51,7 +51,7 @@ const CreateStoryEnhanced = () => {
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [categoriesError, setCategoriesError] = useState("");
   const [tags, setTags] = useState([]);
-  const [status, setStatus] = useState("draft");
+  // Status is now always 'published' by default, no user selection needed
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -193,7 +193,7 @@ const CreateStoryEnhanced = () => {
         description: description.trim(),
         category,
         tags,
-        status,
+        status: "published",
         author: user._id,
         ageRating,
         contentWarnings,
@@ -221,7 +221,7 @@ const CreateStoryEnhanced = () => {
         setDescription("");
         setCategory("");
         setTags([]);
-        setStatus("draft");
+        // Status is always published, no need to reset
         setAgeRating("13+");
         setContentWarnings([]);
         setCustomThumbnail("");
@@ -431,32 +431,16 @@ const CreateStoryEnhanced = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Publication Status</Label>
-                  <Select value={status} onValueChange={setStatus}>
-                    <SelectTrigger className="bg-background/50">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="draft">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-yellow-500 rounded-full" />
-                          Draft
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="published">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full" />
-                          Published
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="archived">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-gray-500 rounded-full" />
-                          Archived
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full" />
+                    Publication Status
+                  </Label>
+                  <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                    <p className="text-sm text-green-400 font-medium">Published</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Your story will be published immediately and visible to all users.
+                    </p>
+                  </div>
                 </div>
 
                 <div className="space-y-2">

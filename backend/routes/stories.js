@@ -24,7 +24,7 @@ router.get('/', [
     }
     return true;
   }),
-  query('status').optional().isIn(['draft', 'published', 'archived']).withMessage('Invalid status')
+  query('status').optional().isIn(['published', 'archived']).withMessage('Invalid status')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -42,7 +42,10 @@ router.get('/', [
       'bookmarksCount', 'upvotes', 'downvotes', 'createdAt', 'publishedAt'
     ];
 
-    const features = new APIFeatures(Story.find(), req.query)
+    // For public route, only show published stories
+    const baseQuery = req.query.status ? Story.find() : Story.find({ status: 'published' });
+    
+    const features = new APIFeatures(baseQuery, req.query)
       .filter()
       .sort()
       .limitFields(defaultFields)
@@ -51,8 +54,9 @@ router.get('/', [
     const stories = await features.query.populate('author', 'name email username verified avatar');
 
     // Count total documents for pagination
+    const countQuery = req.query.status ? Story.find() : Story.find({ status: 'published' });
     const total = await Story.countDocuments(
-      new APIFeatures(Story.find(), req.query).filter().query.getQuery()
+      new APIFeatures(countQuery, req.query).filter().query.getQuery()
     );
 
     res.json({
@@ -90,7 +94,7 @@ router.post('/', authenticate, [
   }),
   body('description').optional().trim().isLength({ max: 500 }).withMessage('Description must be less than 500 characters'),
   body('tags').optional().isArray().withMessage('Tags must be an array'),
-  body('status').optional().isIn(['draft', 'published']).withMessage('Invalid status'),
+  body('status').optional().isIn(['published', 'archived']).withMessage('Invalid status'),
   body('ageRating').optional().isIn(['13+', '16+', '18+']).withMessage('Invalid age rating')
 ], async (req, res) => {
   try {
@@ -108,7 +112,7 @@ router.post('/', authenticate, [
       author: req.user.id,
       category: req.body.category.toLowerCase(),
       tags: req.body.tags || [],
-      status: req.body.status || 'draft',
+      status: req.body.status || 'published',
       ageRating: req.body.ageRating || '16+'
     };
 
@@ -152,6 +156,65 @@ router.post('/', authenticate, [
   }
 });
 
+// @desc    Get stories from followed users
+// @route   GET /api/v1/stories/following
+// @access  Private
+router.get('/following', authenticate, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+
+    // Get current user with following list
+    const currentUser = await User.findById(req.user.id).select('following');
+    
+    if (!currentUser || !currentUser.following || currentUser.following.length === 0) {
+      return res.json({
+        success: true,
+        data: [],
+        message: "You're not following anyone yet",
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          pages: 0
+        }
+      });
+    }
+
+    // Find stories from followed users (only published stories)
+    const stories = await Story.find({ 
+      author: { $in: currentUser.following },
+      status: 'published'
+    })
+    .populate('author', 'name username avatar verified')
+    .sort({ createdAt: -1 })
+    .skip((page - 1) * limit)
+    .limit(limit);
+
+    const total = await Story.countDocuments({ 
+      author: { $in: currentUser.following },
+      status: 'published'
+    });
+
+    res.json({
+      success: true,
+      data: stories,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+  } catch (error) {
+    console.error('Get following stories error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server error fetching following stories'
+    });
+  }
+});
+
 // @desc    Get single story by ID
 // @route   GET /api/v1/stories/:id
 // @access  Public
@@ -161,6 +224,14 @@ router.get('/:id', optionalAuth, async (req, res) => {
       .populate('author', 'name username avatar verified bio role stats');
 
     if (!story) {
+      return res.status(404).json({
+        success: false,
+        error: 'Story not found'
+      });
+    }
+
+    // Only show published stories for public access
+    if (story.status !== 'published') {
       return res.status(404).json({
         success: false,
         error: 'Story not found'
@@ -225,6 +296,14 @@ router.get('/slug/:slug', optionalAuth, async (req, res) => {
       .populate('author', 'name username avatar verified bio role stats');
 
     if (!story) {
+      return res.status(404).json({
+        success: false,
+        error: 'Story not found'
+      });
+    }
+
+    // Only show published stories for public access
+    if (story.status !== 'published') {
       return res.status(404).json({
         success: false,
         error: 'Story not found'
@@ -313,7 +392,7 @@ router.put('/:id', authenticate, [
   }),
   body('description').optional().trim().isLength({ max: 500 }).withMessage('Description must be less than 500 characters'),
   body('tags').optional().isArray().withMessage('Tags must be an array'),
-  body('status').optional().isIn(['draft', 'published', 'archived']).withMessage('Invalid status')
+  body('status').optional().isIn(['published', 'archived']).withMessage('Invalid status')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);

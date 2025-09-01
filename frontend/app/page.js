@@ -5,7 +5,8 @@ import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { SpookyStoryCardSkeleton } from "@/app/_components/ui/SpookySkeleton";
 import { useAuth } from "@/contexts/AuthContext";
-import { Skull } from "lucide-react";
+import { Skull, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 // Import professional components
@@ -122,6 +123,28 @@ export default function MainPage() {
     queryKey: ["stories", activeFilter],
     queryFn: async ({ pageParam = 1 }) => {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5050";
+      
+      // Handle following filter with authentication
+      if (activeFilter === "following") {
+        const token = localStorage.getItem("token");
+        if (!token || !isAuthenticated) {
+          throw new Error("Authentication required for following stories");
+        }
+        
+        const response = await fetch(
+          `${baseUrl}/api/v1/stories/following?page=${pageParam}&limit=6`,
+          {
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (!response.ok) throw new Error("Failed to fetch following stories");
+        return response.json();
+      }
+      
+      // Regular stories endpoint for other filters
       const response = await fetch(
         `${baseUrl}/api/v1/stories?page=${pageParam}&limit=6&sort=${
           activeFilter === "trending"
@@ -140,6 +163,7 @@ export default function MainPage() {
       return lastPage.data.length === 6 ? pages.length + 1 : undefined;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: activeFilter !== "following" || isAuthenticated, // Only enable following query when authenticated
   });
 
   // Mock data for trending authors
@@ -230,8 +254,26 @@ export default function MainPage() {
               <div className="text-center py-12">
                 <Skull className="w-12 h-12 text-red-500 mx-auto mb-4" />
                 <p className="text-muted-foreground">
-                  Failed to load stories. The darkness consumed them...
+                  {activeFilter === "following" 
+                    ? "Unable to load stories from people you follow..."
+                    : "Failed to load stories. The darkness consumed them..."
+                  }
                 </p>
+              </div>
+            ) : stories.length === 0 && activeFilter === "following" ? (
+              <div className="text-center py-12">
+                <Users className="w-12 h-12 text-blue-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No Stories from Following</h3>
+                <p className="text-muted-foreground mb-4">
+                  You're not following anyone yet, or the people you follow haven't published any stories.
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={() => setActiveFilter("all")}
+                  className="border-blue-600/50 text-blue-200 hover:bg-blue-950/30"
+                >
+                  Explore All Stories
+                </Button>
               </div>
             ) : (
               <div className="grid gap-6">

@@ -18,6 +18,9 @@ import statsRoutes from './routes/stats.js';
 import eventsRoutes from './routes/events.js';
 import healthRoutes from './routes/health.js';
 import notificationRoutes from './routes/notifications.js';
+import communityRoutes from './routes/communities.js';
+import communityPostRoutes from './routes/communityPosts.js';
+import trendingRoutes from './routes/trending.js';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler.js';
@@ -88,6 +91,9 @@ app.use('/api/v1/comments', commentRoutes);
 app.use('/api/v1/stats', statsRoutes);
 app.use('/api/v1/events', eventsRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
+app.use('/api/v1/communities', communityRoutes);
+app.use('/api/v1/community-posts', communityPostRoutes);
+app.use('/api/v1/trending', trendingRoutes);
 
 // Error handling middleware
 app.use(notFound);

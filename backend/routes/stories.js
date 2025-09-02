@@ -14,7 +14,7 @@ const router = express.Router();
 // @desc    Get all stories with filtering, sorting, pagination
 // @route   GET /api/v1/stories
 // @access  Public
-router.get('/', [
+router.get('/', optionalAuth, [
   query('page').optional().isInt({ min: 1 }).withMessage('Page must be a positive integer'),
   query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limit must be between 1 and 100'),
   query('category').optional().custom(async (value) => {
@@ -54,6 +54,25 @@ router.get('/', [
 
     const stories = await features.query.populate('author', 'name email username verified avatar');
 
+    // Add like/bookmark status for authenticated users
+    let storiesWithStatus = stories;
+    if (req.user) {
+      const storyIds = stories.map(story => story._id);
+      const [likes, bookmarks] = await Promise.all([
+        Like.find({ user: req.user.id, target: { $in: storyIds }, targetType: 'Story' }).select('target'),
+        Bookmark.find({ user: req.user.id, story: { $in: storyIds } }).select('story')
+      ]);
+      
+      const likedStoryIds = new Set(likes.map(like => like.target.toString()));
+      const bookmarkedStoryIds = new Set(bookmarks.map(bookmark => bookmark.story.toString()));
+      
+      storiesWithStatus = stories.map(story => ({
+        ...story.toObject(),
+        isLiked: likedStoryIds.has(story._id.toString()),
+        isBookmarked: bookmarkedStoryIds.has(story._id.toString())
+      }));
+    }
+
     // Count total documents for pagination
     const countQuery = req.query.status ? Story.find() : Story.find({ status: 'published' });
     const total = await Story.countDocuments(
@@ -62,7 +81,7 @@ router.get('/', [
 
     res.json({
       success: true,
-      data: stories,
+      data: storiesWithStatus,
       pagination: {
         page: parseInt(req.query.page) || 1,
         limit: parseInt(req.query.limit) || 100,
@@ -157,6 +176,62 @@ router.post('/', authenticate, [
   }
 });
 
+// @desc    Get user bookmarks
+// @route   GET /api/v1/stories/bookmarks
+// @access  Private
+router.get('/bookmarks', authenticate, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+
+    const bookmarks = await Bookmark.find({ user: req.user.id })
+      .populate({
+        path: 'story',
+        match: { status: 'published' }, // Only show published stories
+        populate: {
+          path: 'author',
+          select: 'name username avatar verified'
+        }
+      })
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    // Filter out bookmarks where story is null (unpublished/deleted stories)
+    const validBookmarks = bookmarks.filter(bookmark => bookmark.story);
+    
+    // Add like/bookmark status for authenticated users
+    let storiesWithStatus = validBookmarks.map(bookmark => ({
+      ...bookmark.story.toObject(),
+      bookmarkedAt: bookmark.createdAt,
+      bookmarkNotes: bookmark.notes,
+      bookmarkTags: bookmark.tags,
+      isBookmarked: true // Always true for bookmarks page
+    }));
+
+    if (storiesWithStatus.length > 0) {
+      const storyIds = storiesWithStatus.map(story => story._id);
+      const likes = await Like.find({ user: req.user.id, target: { $in: storyIds }, targetType: 'Story' }).select('target');
+      const likedStoryIds = new Set(likes.map(like => like.target.toString()));
+      
+      storiesWithStatus = storiesWithStatus.map(story => ({
+        ...story,
+        isLiked: likedStoryIds.has(story._id.toString())
+      }));
+    }
+
+    const total = await Bookmark.countDocuments({ user: req.user.id, story: { $exists: true } });
+
+    res.json({ success: true, data: storiesWithStatus, pagination: { page, limit, total, pages: Math.ceil(total / limit) } });
+  } catch (error) {
+    console.error('Get bookmarks error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server error fetching bookmarks'
+    });
+  }
+});
+
 // @desc    Get stories from followed users
 // @route   GET /api/v1/stories/following
 // @access  Private
@@ -192,6 +267,25 @@ router.get('/following', authenticate, async (req, res) => {
     .skip((page - 1) * limit)
     .limit(limit);
 
+    // Add like/bookmark status for authenticated users
+    let storiesWithStatus = stories;
+    if (stories.length > 0) {
+      const storyIds = stories.map(story => story._id);
+      const [likes, bookmarks] = await Promise.all([
+        Like.find({ user: req.user.id, target: { $in: storyIds }, targetType: 'Story' }).select('target'),
+        Bookmark.find({ user: req.user.id, story: { $in: storyIds } }).select('story')
+      ]);
+      
+      const likedStoryIds = new Set(likes.map(like => like.target.toString()));
+      const bookmarkedStoryIds = new Set(bookmarks.map(bookmark => bookmark.story.toString()));
+      
+      storiesWithStatus = stories.map(story => ({
+        ...story.toObject(),
+        isLiked: likedStoryIds.has(story._id.toString()),
+        isBookmarked: bookmarkedStoryIds.has(story._id.toString())
+      }));
+    }
+
     const total = await Story.countDocuments({ 
       author: { $in: currentUser.following },
       status: 'published'
@@ -199,7 +293,7 @@ router.get('/following', authenticate, async (req, res) => {
 
     res.json({
       success: true,
-      data: stories,
+      data: storiesWithStatus,
       pagination: {
         page,
         limit,

@@ -35,8 +35,8 @@ export default function NotificationDropdown({
 
   const fetchNotifications = async () => {
     try {
-      const response = await api.get('/api/v1/notifications?limit=10');
-      
+      const response = await api.get("/api/v1/notifications?limit=10");
+
       if (response.data.success) {
         setNotifications(response.data.data || []);
       }
@@ -49,7 +49,7 @@ export default function NotificationDropdown({
 
   const markAsRead = async (notificationIds) => {
     try {
-      await api.patch('/api/v1/notifications/mark-read', { notificationIds });
+      await api.patch("/api/v1/notifications/mark-read", { notificationIds });
 
       // Update local state
       setNotifications((prev) =>
@@ -72,7 +72,7 @@ export default function NotificationDropdown({
 
   const markAllAsRead = async () => {
     try {
-      await api.patch('/api/v1/notifications/mark-read', { markAll: true });
+      await api.patch("/api/v1/notifications/mark-read", { markAll: true });
 
       setNotifications((prev) =>
         prev.map((notif) => ({ ...notif, isRead: true }))

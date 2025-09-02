@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { formatDistanceToNow } from "date-fns";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,17 +10,21 @@ import {
   Heart,
   MessageCircle,
   Bookmark,
-  Share2,
+  ChevronUp,
+  ChevronDown,
   Eye,
+  Calendar,
   Clock,
+  User,
+  CheckCircle,
   ArrowUp,
   ArrowDown,
   Skull,
+  Share2,
 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
-import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import Link from "next/link";
 
 // Safe date formatting helper
 const safeFormatDate = (dateString) => {
@@ -34,6 +39,21 @@ const safeFormatDate = (dateString) => {
 
 export default function StoryCard({ story, onVote, onLike, onBookmark }) {
   const { user, isAuthenticated } = useAuth();
+  const [localLikeState, setLocalLikeState] = useState(story.isLiked ?? false);
+  const [localLikeCount, setLocalLikeCount] = useState(story.likesCount || 0);
+  const [localBookmarkState, setLocalBookmarkState] = useState(
+    story.isBookmarked ?? false
+  );
+  const [localBookmarkCount, setLocalBookmarkCount] = useState(
+    story.bookmarksCount || 0
+  );
+  const [isLikeLoading, setIsLikeLoading] = useState(false);
+  const [isBookmarkLoading, setIsBookmarkLoading] = useState(false);
+
+  useEffect(() => {
+    setLocalLikeState(story.isLiked ?? false);
+    setLocalBookmarkState(story.isBookmarked ?? false);
+  }, [story.isLiked, story.isBookmarked]);
 
   const handleVote = async (voteType) => {
     if (!isAuthenticated) {
@@ -50,8 +70,25 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
       toast.error("Please sign in to like stories");
       return;
     }
-    if (onLike) {
-      await onLike(story._id);
+
+    setIsLikeLoading(true);
+
+    // Optimistic update
+    const wasLiked = localLikeState;
+    setLocalLikeState(!wasLiked);
+    setLocalLikeCount((prev) => (wasLiked ? prev - 1 : prev + 1));
+
+    try {
+      if (onLike) {
+        await onLike(story._id);
+      }
+    } catch (error) {
+      // Rollback on error
+      setLocalLikeState(wasLiked);
+      setLocalLikeCount((prev) => (wasLiked ? prev + 1 : prev - 1));
+      toast.error("Failed to like story");
+    } finally {
+      setIsLikeLoading(false);
     }
   };
 
@@ -60,8 +97,25 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
       toast.error("Please sign in to bookmark stories");
       return;
     }
-    if (onBookmark) {
-      await onBookmark(story._id);
+
+    setIsBookmarkLoading(true);
+
+    // Optimistic update
+    const wasBookmarked = localBookmarkState;
+    setLocalBookmarkState(!wasBookmarked);
+    setLocalBookmarkCount((prev) => (wasBookmarked ? prev - 1 : prev + 1));
+
+    try {
+      if (onBookmark) {
+        await onBookmark(story._id);
+      }
+    } catch (error) {
+      // Revert optimistic update on error
+      setLocalBookmarkState(wasBookmarked);
+      setLocalBookmarkCount((prev) => (wasBookmarked ? prev + 1 : prev - 1));
+      toast.error("Failed to bookmark story");
+    } finally {
+      setIsBookmarkLoading(false);
     }
   };
 
@@ -95,7 +149,10 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
 
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <Link href={`/user/${story.author?.username}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <Link
+                  href={`/user/${story.author?.username}`}
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                >
                   <Avatar className="w-6 h-6 border border-border">
                     <AvatarImage
                       src={story.author?.photo}
@@ -137,7 +194,11 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
                 </Badge>
 
                 {story.tags?.slice(0, 3).map((tag) => (
-                  <Badge key={tag} variant="secondary" className="text-xs border-none shadow-sm shadow-black/40">
+                  <Badge
+                    key={tag}
+                    variant="secondary"
+                    className="text-xs border-none shadow-sm shadow-black/40"
+                  >
                     {tag}
                   </Badge>
                 ))}
@@ -182,10 +243,19 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
               variant="ghost"
               size="sm"
               onClick={handleBookmark}
-              className="text-muted-foreground hover:text-yellow-400 hover:bg-yellow-400/10 border-none shadow-sm shadow-black/30 hover:shadow-md hover:shadow-black/40 transition-all duration-200"
+              disabled={isBookmarkLoading}
+              className={`border-none shadow-sm shadow-black/30 hover:shadow-md hover:shadow-black/40 transition-all duration-200 ${
+                localBookmarkState
+                  ? "text-yellow-400 bg-yellow-400/10 hover:text-yellow-300 hover:bg-yellow-400/20"
+                  : "text-muted-foreground hover:text-yellow-400 hover:bg-yellow-400/10"
+              } ${isBookmarkLoading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              <Bookmark className="w-4 h-4 mr-1" />
-              {story.bookmarksCount || 0}
+              <Bookmark
+                className={`w-4 h-4 mr-1 ${
+                  localBookmarkState ? "fill-current" : ""
+                } ${isBookmarkLoading ? "animate-pulse" : ""}`}
+              />
+              {localBookmarkCount}
             </Button>
 
             <Button

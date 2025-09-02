@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/lib/api";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -32,17 +32,7 @@ export default function NotificationsPage() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  useEffect(() => {
-    if (isAuthenticated === false) {
-      router.push("/login");
-      return;
-    }
-    if (isAuthenticated === true) {
-      fetchNotifications(1, true);
-    }
-  }, [isAuthenticated, filter, router]);
-
-  const fetchNotifications = async (pageNum = 1, reset = false) => {
+  const fetchNotifications = useCallback(async (pageNum = 1, reset = false) => {
     try {
       setLoading(pageNum === 1);
       const unreadOnly = filter === "unread" ? "&unreadOnly=true" : "";
@@ -63,7 +53,17 @@ export default function NotificationsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter]);
+
+  useEffect(() => {
+    if (isAuthenticated === false) {
+      router.push("/login");
+      return;
+    }
+    if (isAuthenticated === true) {
+      fetchNotifications(1, true);
+    }
+  }, [isAuthenticated, filter, router, fetchNotifications]);
 
   const markAsRead = async (notificationIds) => {
     try {

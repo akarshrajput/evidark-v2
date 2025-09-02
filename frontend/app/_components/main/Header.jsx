@@ -18,6 +18,7 @@ import {
   Compass,
   BookOpen,
   Users,
+  Bookmark,
   Ghost,
   Skull,
   Crown,
@@ -25,7 +26,6 @@ import {
   LogOut,
   Eye,
   Heart,
-  Bookmark,
   TrendingUp,
   Menu,
   X,
@@ -101,9 +101,9 @@ const Header = () => {
             asChild
             className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 border-none shadow-sm shadow-black/20 hover:shadow-md hover:shadow-black/30"
           >
-            <Link href="/categories" className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4" />
-              <span className="font-medium">Categories</span>
+            <Link href="/bookmarks" className="flex items-center gap-2">
+              <Bookmark className="w-4 h-4" />
+              <span className="font-medium">Bookmarks</span>
             </Link>
           </Button>
 
@@ -113,9 +113,21 @@ const Header = () => {
             asChild
             className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 border-none shadow-sm shadow-black/20 hover:shadow-md hover:shadow-black/30"
           >
-            <Link href="/community" className="flex items-center gap-2">
+            <Link href="/communities" className="flex items-center gap-2">
               <Users className="w-4 h-4" />
-              <span className="font-medium">Community</span>
+              <span className="font-medium">Communities</span>
+            </Link>
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 border-none shadow-sm shadow-black/20 hover:shadow-md hover:shadow-black/30"
+          >
+            <Link href="/categories" className="flex items-center gap-2">
+              <BookOpen className="w-4 h-4" />
+              <span className="font-medium">Categories</span>
             </Link>
           </Button>
 
@@ -177,7 +189,9 @@ const Header = () => {
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={user?.avatar} alt={user?.name} />
                     <AvatarFallback className="bg-red-900/50 text-red-100">
-                      {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || "U"}
+                      {user?.name?.[0]?.toUpperCase() ||
+                        user?.email?.[0]?.toUpperCase() ||
+                        "U"}
                     </AvatarFallback>
                   </Avatar>
                   {user?.role === "admin" && (

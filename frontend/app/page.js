@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { SpookyStoryCardSkeleton } from "@/app/_components/ui/SpookySkeleton";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,6 +29,7 @@ const safeFormatDate = (dateString) => {
 export default function MainPage() {
   const [activeFilter, setActiveFilter] = useState("all");
   const { user, isAuthenticated } = useAuth();
+  const queryClient = useQueryClient();
 
   // Vote handler
   const handleVote = async (storyId, voteType) => {
@@ -78,6 +79,25 @@ export default function MainPage() {
 
       if (response.ok) {
         const data = await response.json();
+        // Optimistic cache update instead of full invalidation
+        queryClient.setQueryData(['stories', activeFilter, 1], (oldData) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            pages: oldData.pages.map(page => ({
+              ...page,
+              data: page.data.map(story => 
+                story._id === storyId 
+                  ? { 
+                      ...story, 
+                      isLiked: data.isLiked,
+                      likesCount: data.isLiked ? story.likesCount + 1 : story.likesCount - 1
+                    }
+                  : story
+              )
+            }))
+          };
+        });
         toast.success(data.message);
       }
     } catch (error) {
@@ -85,7 +105,7 @@ export default function MainPage() {
     }
   };
 
-  // Bookmark handler
+  // Bookmark handler with optimistic updates
   const handleBookmark = async (storyId) => {
     if (!isAuthenticated) {
       toast.error("Please sign in to bookmark stories");
@@ -104,6 +124,27 @@ export default function MainPage() {
 
       if (response.ok) {
         const data = await response.json();
+        // Optimistic cache update for all story queries
+        queryClient.setQueryData(['stories', activeFilter, 1], (oldData) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            pages: oldData.pages.map(page => ({
+              ...page,
+              data: page.data.map(story => 
+                story._id === storyId 
+                  ? { 
+                      ...story, 
+                      isBookmarked: data.isBookmarked,
+                      bookmarksCount: data.isBookmarked ? story.bookmarksCount + 1 : story.bookmarksCount - 1
+                    }
+                  : story
+              )
+            }))
+          };
+        });
+        // Also update bookmarks page cache if it exists
+        queryClient.invalidateQueries(['bookmarks']);
         toast.success(data.message);
       }
     } catch (error) {

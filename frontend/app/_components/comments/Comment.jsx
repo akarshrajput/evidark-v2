@@ -116,7 +116,7 @@ export default function Comment({
             <div className="flex-1 min-w-0">
               {/* Author Info */}
               <div className="flex items-center gap-2 mb-2">
-                <UserLink 
+                <UserLink
                   user={comment.author}
                   showAvatar={false}
                   showRole={true}
@@ -241,8 +241,7 @@ export default function Comment({
                 )}
 
                 {isAuthenticated &&
-                  (user.id === comment.author._id ||
-                    user.role === "admin") && (
+                  (user.id === comment.author._id || user.role === "admin") && (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -279,10 +278,7 @@ export default function Comment({
                 <form onSubmit={handleSubmitReply} className="mt-4 space-y-3">
                   <div className="flex items-start gap-2">
                     <Avatar className="w-6 h-6 border border-border/50">
-                      <AvatarImage
-                        src={user.avatar}
-                        alt={user.name}
-                      />
+                      <AvatarImage src={user.avatar} alt={user.name} />
                       <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-700 text-white text-xs">
                         {user.name?.[0] || "U"}
                       </AvatarFallback>

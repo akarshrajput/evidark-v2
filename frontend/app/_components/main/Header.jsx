@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 // import OnlineAvatar from "../ui/OnlineAvatar";
 import NotificationBell from "../notifications/NotificationBell";
-import Search from "./Search";
+import SearchBar from "@/components/search/SearchBar";
+import MobileSearch from "@/components/search/MobileSearch";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +19,7 @@ import {
   Compass,
   BookOpen,
   Users,
+  Calendar,
   Bookmark,
   Ghost,
   Skull,
@@ -125,6 +127,18 @@ const Header = () => {
             asChild
             className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 border-none shadow-sm shadow-black/20 hover:shadow-md hover:shadow-black/30"
           >
+            <Link href="/events" className="flex items-center gap-2">
+              <Calendar className="w-4 h-4" />
+              <span className="font-medium">Events</span>
+            </Link>
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 border-none shadow-sm shadow-black/20 hover:shadow-md hover:shadow-black/30"
+          >
             <Link href="/categories" className="flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
               <span className="font-medium">Categories</span>
@@ -149,8 +163,14 @@ const Header = () => {
 
       <div className="flex items-center gap-4">
         <div className="hidden md:block">
-          <Search />
+          <SearchBar 
+            className="w-80"
+            placeholder="Search stories, users, communities..."
+          />
         </div>
+        
+        {/* Mobile Search */}
+        <MobileSearch />
 
         {user ? (
           <div className="flex items-center gap-3">

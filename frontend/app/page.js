@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useQuery, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useInfiniteQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { SpookyStoryCardSkeleton } from "@/app/_components/ui/SpookySkeleton";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,7 +16,7 @@ import { toast } from "sonner";
 // Import professional components
 import FilterButtons from "@/app/_components/main/FilterButtons";
 import StoryCard from "@/app/_components/stories/StoryCard";
-import Sidebar from "@/app/_components/main/Sidebar";
+import RightSidebar from "@/app/_components/main/RightSidebar";
 import LoadingIndicator from "@/app/_components/main/LoadingIndicator";
 
 // Safe date formatting helper
@@ -39,17 +43,20 @@ export default function MainPage() {
     }
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/stories/${storyId}/vote`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          userId: user.id,
-          voteType,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/stories/${storyId}/vote`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            userId: user.id,
+            voteType,
+          }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -68,34 +75,39 @@ export default function MainPage() {
     }
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/stories/${storyId}/like`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ userId: user.id }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/stories/${storyId}/like`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ userId: user.id }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
         // Optimistic cache update instead of full invalidation
-        queryClient.setQueryData(['stories', activeFilter, 1], (oldData) => {
+        queryClient.setQueryData(["stories", activeFilter, 1], (oldData) => {
           if (!oldData) return oldData;
           return {
             ...oldData,
-            pages: oldData.pages.map(page => ({
+            pages: oldData.pages.map((page) => ({
               ...page,
-              data: page.data.map(story => 
-                story._id === storyId 
-                  ? { 
-                      ...story, 
+              data: page.data.map((story) =>
+                story._id === storyId
+                  ? {
+                      ...story,
                       isLiked: data.isLiked,
-                      likesCount: data.isLiked ? story.likesCount + 1 : story.likesCount - 1
+                      likesCount: data.isLiked
+                        ? story.likesCount + 1
+                        : story.likesCount - 1,
                     }
                   : story
-              )
-            }))
+              ),
+            })),
           };
         });
         toast.success(data.message);
@@ -113,38 +125,43 @@ export default function MainPage() {
     }
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/stories/${storyId}/bookmark`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ userId: user.id }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/stories/${storyId}/bookmark`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ userId: user.id }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
         // Optimistic cache update for all story queries
-        queryClient.setQueryData(['stories', activeFilter, 1], (oldData) => {
+        queryClient.setQueryData(["stories", activeFilter, 1], (oldData) => {
           if (!oldData) return oldData;
           return {
             ...oldData,
-            pages: oldData.pages.map(page => ({
+            pages: oldData.pages.map((page) => ({
               ...page,
-              data: page.data.map(story => 
-                story._id === storyId 
-                  ? { 
-                      ...story, 
+              data: page.data.map((story) =>
+                story._id === storyId
+                  ? {
+                      ...story,
                       isBookmarked: data.isBookmarked,
-                      bookmarksCount: data.isBookmarked ? story.bookmarksCount + 1 : story.bookmarksCount - 1
+                      bookmarksCount: data.isBookmarked
+                        ? story.bookmarksCount + 1
+                        : story.bookmarksCount - 1,
                     }
                   : story
-              )
-            }))
+              ),
+            })),
           };
         });
         // Also update bookmarks page cache if it exists
-        queryClient.invalidateQueries(['bookmarks']);
+        queryClient.invalidateQueries(["bookmarks"]);
         toast.success(data.message);
       }
     } catch (error) {
@@ -163,20 +180,21 @@ export default function MainPage() {
   } = useInfiniteQuery({
     queryKey: ["stories", activeFilter],
     queryFn: async ({ pageParam = 1 }) => {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5050";
-      
+      const baseUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:5050";
+
       // Handle following filter with authentication
       if (activeFilter === "following") {
         const token = localStorage.getItem("token");
         if (!token || !isAuthenticated) {
           throw new Error("Authentication required for following stories");
         }
-        
+
         const response = await fetch(
           `${baseUrl}/api/v1/stories/following?page=${pageParam}&limit=6`,
           {
             headers: {
-              "Authorization": `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
           }
@@ -184,7 +202,7 @@ export default function MainPage() {
         if (!response.ok) throw new Error("Failed to fetch following stories");
         return response.json();
       }
-      
+
       // Regular stories endpoint for other filters
       const response = await fetch(
         `${baseUrl}/api/v1/stories?page=${pageParam}&limit=6&sort=${
@@ -210,31 +228,84 @@ export default function MainPage() {
   // Mock data for trending authors
   const trendingAuthors = {
     data: [
-      { id: 1, name: "Dark Writer", username: "darkwriter", avatar: null, bio: "Master of horror tales" },
-      { id: 2, name: "Shadow Poet", username: "shadowpoet", avatar: null, bio: "Crafting nightmares in verse" },
-      { id: 3, name: "Midnight Scribe", username: "midnightscribe", avatar: null, bio: "Stories that haunt your dreams" }
-    ]
+      {
+        id: 1,
+        name: "Dark Writer",
+        username: "darkwriter",
+        avatar: null,
+        bio: "Master of horror tales",
+      },
+      {
+        id: 2,
+        name: "Shadow Poet",
+        username: "shadowpoet",
+        avatar: null,
+        bio: "Crafting nightmares in verse",
+      },
+      {
+        id: 3,
+        name: "Midnight Scribe",
+        username: "midnightscribe",
+        avatar: null,
+        bio: "Stories that haunt your dreams",
+      },
+    ],
   };
   const authorsLoading = false;
 
   // Mock data for categories
   const categories = {
     data: [
-      { id: 1, name: "Horror", slug: "horror", description: "Spine-chilling tales" },
-      { id: 2, name: "Thriller", slug: "thriller", description: "Edge-of-your-seat suspense" },
-      { id: 3, name: "Mystery", slug: "mystery", description: "Puzzles in the dark" },
-      { id: 4, name: "Supernatural", slug: "supernatural", description: "Beyond the natural world" }
-    ]
+      {
+        id: 1,
+        name: "Horror",
+        slug: "horror",
+        description: "Spine-chilling tales",
+      },
+      {
+        id: 2,
+        name: "Thriller",
+        slug: "thriller",
+        description: "Edge-of-your-seat suspense",
+      },
+      {
+        id: 3,
+        name: "Mystery",
+        slug: "mystery",
+        description: "Puzzles in the dark",
+      },
+      {
+        id: 4,
+        name: "Supernatural",
+        slug: "supernatural",
+        description: "Beyond the natural world",
+      },
+    ],
   };
   const categoriesLoading = false;
 
   // Mock data for events
   const events = {
     data: [
-      { id: 1, title: "Dark Tales Contest", description: "Submit your horror story", date: "2025-09-15" },
-      { id: 2, title: "Midnight Reading", description: "Join our spooky session", date: "2025-09-22" },
-      { id: 3, title: "Horror Writers Meetup", description: "Connect with authors", date: "2025-10-01" }
-    ]
+      {
+        id: 1,
+        title: "Dark Tales Contest",
+        description: "Submit your horror story",
+        date: "2025-09-15",
+      },
+      {
+        id: 2,
+        title: "Midnight Reading",
+        description: "Join our spooky session",
+        date: "2025-09-22",
+      },
+      {
+        id: 3,
+        title: "Horror Writers Meetup",
+        description: "Connect with authors",
+        date: "2025-10-01",
+      },
+    ],
   };
   const eventsLoading = false;
 
@@ -245,8 +316,8 @@ export default function MainPage() {
       stories: 666,
       categories: 13,
       views: 13666,
-      likes: 3333
-    }
+      likes: 3333,
+    },
   };
   const statsLoading = false;
 
@@ -279,9 +350,9 @@ export default function MainPage() {
           {/* Main Content */}
           <div className="lg:col-span-3">
             {/* Filter Buttons */}
-            <FilterButtons 
-              activeFilter={activeFilter} 
-              onFilterChange={setActiveFilter} 
+            <FilterButtons
+              activeFilter={activeFilter}
+              onFilterChange={setActiveFilter}
             />
 
             {/* Stories Grid */}
@@ -295,18 +366,20 @@ export default function MainPage() {
               <div className="text-center py-12">
                 <Skull className="w-12 h-12 text-red-500 mx-auto mb-4" />
                 <p className="text-muted-foreground">
-                  {activeFilter === "following" 
+                  {activeFilter === "following"
                     ? "Unable to load stories from people you follow..."
-                    : "Failed to load stories. The darkness consumed them..."
-                  }
+                    : "Failed to load stories. The darkness consumed them..."}
                 </p>
               </div>
             ) : stories.length === 0 && activeFilter === "following" ? (
               <div className="text-center py-12">
                 <Users className="w-12 h-12 text-blue-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No Stories from Following</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  No Stories from Following
+                </h3>
                 <p className="text-muted-foreground mb-4">
-                  You&apos;re not following anyone yet, or the people you follow haven&apos;t published any stories.
+                  You&apos;re not following anyone yet, or the people you follow
+                  haven&apos;t published any stories.
                 </p>
                 <Button
                   variant="outline"
@@ -334,16 +407,9 @@ export default function MainPage() {
             {isFetchingNextPage && <LoadingIndicator />}
           </div>
 
-          {/* Sidebar */}
+          {/* Right Sidebar */}
           <div className="lg:col-span-1">
-            <Sidebar
-              trendingAuthors={trendingAuthors}
-              categories={categories}
-              events={events}
-              authorsLoading={authorsLoading}
-              categoriesLoading={categoriesLoading}
-              eventsLoading={eventsLoading}
-            />
+            <RightSidebar />
           </div>
         </div>
       </div>

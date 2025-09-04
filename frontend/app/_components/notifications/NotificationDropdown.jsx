@@ -126,7 +126,7 @@ export default function NotificationDropdown({
                   key={user?._id || index}
                   className="h-6 w-6 border border-red-500/30"
                 >
-                  <AvatarImage src={user?.avatar} />
+                  <AvatarImage src={user?.photo} />
                   <AvatarFallback className="text-xs bg-red-900/50">
                     {user?.name?.[0]?.toUpperCase() || "U"}
                   </AvatarFallback>
@@ -235,7 +235,7 @@ export default function NotificationDropdown({
 
                 {/* Avatar */}
                 <Avatar className="h-8 w-8 border border-red-500/30">
-                  <AvatarImage src={notification.actor?.avatar} />
+                  <AvatarImage src={notification.actor?.photo} />
                   <AvatarFallback className="text-xs bg-red-900/50">
                     {notification.actor?.name?.[0]?.toUpperCase() || "U"}
                   </AvatarFallback>

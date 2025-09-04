@@ -49,7 +49,7 @@ export default function ChatList({
       )?.user;
       return {
         name: otherUser?.name || "Unknown User",
-        avatar: otherUser?.avatar,
+        avatar: otherUser?.photo,
         isOnline: otherUser?.isOnline,
       };
     } else {

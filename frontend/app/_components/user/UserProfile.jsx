@@ -24,6 +24,7 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
+import ProfilePictureUpload from "./ProfilePictureUpload";
 
 export default function UserProfile({ user: initialUser, currentUser, isAuthenticated }) {
   const [user, setUser] = useState(initialUser);
@@ -90,6 +91,10 @@ export default function UserProfile({ user: initialUser, currentUser, isAuthenti
   };
 
   const isCurrentUser = currentUser?.id === user._id;
+
+  const handleProfileUpdate = (updatedUser) => {
+    setUser(updatedUser);
+  };
 
   // Update user state when prop changes
   useEffect(() => {
@@ -308,14 +313,22 @@ export default function UserProfile({ user: initialUser, currentUser, isAuthenti
           <div className="flex flex-col md:flex-row items-start gap-6">
             {/* Avatar */}
             <div className="relative">
-              <OnlineAvatar
-                src={user.photo}
-                alt={user.name}
-                fallback={user.name?.[0] || user.username?.[0] || "U"}
-                isOnline={user.isOnline}
-                size="2xl"
-                className="border-4 border-primary/20"
-              />
+              {isCurrentUser ? (
+                <ProfilePictureUpload 
+                  user={user} 
+                  onProfileUpdate={handleProfileUpdate}
+                  isCurrentUser={isCurrentUser}
+                />
+              ) : (
+                <OnlineAvatar
+                  src={user.photo}
+                  alt={user.name}
+                  fallback={user.name?.[0] || user.username?.[0] || "U"}
+                  isOnline={user.isOnline}
+                  size="2xl"
+                  className="border-4 border-primary/20"
+                />
+              )}
               {user.role === "admin" && (
                 <div className="absolute -top-2 -right-2 bg-yellow-500 rounded-full p-2">
                   <Crown className="w-4 h-4 text-black" />

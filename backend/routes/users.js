@@ -238,6 +238,51 @@ router.get('/username/:username', optionalAuth, async (req, res) => {
   }
 });
 
+// @desc    Update user profile (simple PATCH for profile picture)
+// @route   PATCH /api/v1/users/profile
+// @access  Private
+router.patch('/profile', authenticate, [
+  body('photo').optional().isURL().withMessage('Photo must be a valid URL'),
+  body('name').optional().trim().isLength({ min: 2, max: 50 }).withMessage('Name must be between 2 and 50 characters'),
+  body('bio').optional().trim().isLength({ max: 500 }).withMessage('Bio cannot exceed 500 characters')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        error: 'Validation failed',
+        details: errors.array()
+      });
+    }
+
+    const { photo, name, bio } = req.body;
+    const updateData = {};
+    
+    if (photo !== undefined) updateData.photo = photo;
+    if (name) updateData.name = name;
+    if (bio !== undefined) updateData.bio = bio;
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      updateData,
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: user
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server error updating profile'
+    });
+  }
+});
+
 // @desc    Update user profile
 // @route   PUT /api/v1/users/:id
 // @access  Private (Own profile or Admin)

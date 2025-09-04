@@ -21,6 +21,7 @@ import notificationRoutes from './routes/notifications.js';
 import communityRoutes from './routes/communities.js';
 import communityPostRoutes from './routes/communityPosts.js';
 import trendingRoutes from './routes/trending.js';
+import searchRoutes from './routes/search.js';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler.js';
@@ -94,6 +95,7 @@ app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/communities', communityRoutes);
 app.use('/api/v1/community-posts', communityPostRoutes);
 app.use('/api/v1/trending', trendingRoutes);
+app.use('/api/v1/search', searchRoutes);
 
 // Error handling middleware
 app.use(notFound);

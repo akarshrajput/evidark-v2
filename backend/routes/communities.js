@@ -422,4 +422,37 @@ router.post('/:id/posts', authenticate, [
   }
 });
 
+// @desc    Get user's joined communities
+// @route   GET /api/v1/communities/my/joined
+// @access  Private
+router.get('/my/joined', authenticate, async (req, res) => {
+  try {
+    const communities = await Community.find({
+      'members.user': req.user.id,
+      status: 'active'
+    })
+    .populate('creator', 'name username avatar verified')
+    .sort('-members.joinedAt')
+    .limit(10)
+    .lean();
+
+    // Add user role for each community
+    const communitiesWithRole = communities.map(community => ({
+      ...community,
+      userRole: community.members.find(m => m.user.toString() === req.user.id)?.role || 'member'
+    }));
+
+    res.json({
+      success: true,
+      data: communitiesWithRole
+    });
+  } catch (error) {
+    console.error('Get user communities error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server error fetching user communities'
+    });
+  }
+});
+
 export default router;

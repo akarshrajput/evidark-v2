@@ -143,7 +143,7 @@ export default function NotificationsPage() {
             <div className="flex -space-x-2">
               {lastActors.slice(0, 3).map((user, index) => (
                 <Avatar key={user._id} className="h-8 w-8 border-2 border-background">
-                  <AvatarImage src={user.avatar} />
+                  <AvatarImage src={user.photo} />
                   <AvatarFallback className="text-xs bg-red-900/50">
                     {user.name[0]?.toUpperCase()}
                   </AvatarFallback>
@@ -165,7 +165,7 @@ export default function NotificationsPage() {
       <div className="flex-1 min-w-0">
         <div className="flex items-center space-x-3 mb-1">
           <Avatar className="h-8 w-8 border border-red-500/30">
-            <AvatarImage src={actor.avatar} />
+            <AvatarImage src={actor.photo} />
             <AvatarFallback className="text-xs bg-red-900/50">
               {actor.name[0]?.toUpperCase()}
             </AvatarFallback>

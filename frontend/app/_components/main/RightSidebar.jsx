@@ -11,6 +11,7 @@ import {
   ArrowRight,
   Skull,
   Eye,
+  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
@@ -190,17 +191,29 @@ const RightSidebar = () => {
                 <Users className="w-5 h-5 text-red-400" />
                 My Dark Circles
               </h3>
-              {communities.length > 3 && (
-                <Link href="/communities">
+              <div className="flex items-center gap-2">
+                <Link href="/communities/create">
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-xs text-muted-foreground hover:text-red-400"
+                    className="h-8 w-8 p-0 text-muted-foreground hover:text-red-400"
+                    title="Create new community"
                   >
-                    View All
+                    <Plus className="w-4 h-4" />
                   </Button>
                 </Link>
-              )}
+                {communities.length > 3 && (
+                  <Link href="/communities">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs text-muted-foreground hover:text-red-400"
+                    >
+                      View All
+                    </Button>
+                  </Link>
+                )}
+              </div>
             </div>
 
             {communities.length === 0 ? (

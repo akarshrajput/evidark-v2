@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePathname } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +28,9 @@ import {
   Skull,
   Ghost,
   Eye,
+  Crown,
+  Zap,
+  Moon,
 } from "lucide-react";
 
 const DashboardSidebar = () => {
@@ -90,37 +94,35 @@ const DashboardSidebar = () => {
       ]
     : [];
 
-  // Mock joined communities data
-  const joinedCommunities = [
-    {
-      id: 1,
-      name: "Horror Stories",
-      icon: Skull,
-      members: "12.5k",
-      color: "text-red-400",
+  // Community type icons map
+  const communityTypeIcons = {
+    circle: Users,
+    challenge: Zap,
+    ritual: Moon,
+    coven: Crown,
+  };
+
+  // Fetch user's joined communities
+  const { data: userCommunities } = useQuery({
+    queryKey: ["user-communities"],
+    queryFn: async () => {
+      if (!isAuthenticated) return { data: [] };
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/communities/my/joined`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (!response.ok) throw new Error("Failed to fetch communities");
+      return response.json();
     },
-    {
-      id: 2,
-      name: "Mystery Tales",
-      icon: Eye,
-      members: "8.2k",
-      color: "text-purple-400",
-    },
-    {
-      id: 3,
-      name: "Paranormal",
-      icon: Ghost,
-      members: "15.1k",
-      color: "text-blue-400",
-    },
-    {
-      id: 4,
-      name: "True Crime",
-      icon: Globe,
-      members: "23.8k",
-      color: "text-green-400",
-    },
-  ];
+    enabled: isAuthenticated,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const joinedCommunities = userCommunities?.data || [];
 
   return (
     <div className="h-full bg-background">
@@ -177,43 +179,85 @@ const DashboardSidebar = () => {
                 Communities
               </h2>
               {isAuthenticated && (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-6 w-6 p-0 hover:bg-accent"
-                >
-                  <Plus className="w-3 h-3" />
-                </Button>
+                <Link href="/communities/create">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-6 w-6 p-0 hover:bg-accent"
+                    title="Create new community"
+                  >
+                    <Plus className="w-3 h-3" />
+                  </Button>
+                </Link>
               )}
             </div>
 
             {isAuthenticated ? (
               <div className="space-y-1">
-                {joinedCommunities.map((community) => (
-                  <Link
-                    key={community.id}
-                    href={`/communities/${community.id}`}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 hover:bg-accent border border-transparent hover:border-border group"
-                  >
-                    <community.icon className={`w-4 h-4 ${community.color}`} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {community.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {community.members} members
-                      </p>
-                    </div>
-                  </Link>
-                ))}
+                {joinedCommunities.length === 0 ? (
+                  <div className="px-3 py-4 text-center">
+                    <Skull className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                    <p className="text-xs text-muted-foreground mb-3">
+                      No circles joined yet
+                    </p>
+                    <Link href="/communities">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full border-red-600/50 text-red-200 hover:bg-red-950/30"
+                      >
+                        Explore Circles
+                      </Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <>
+                    {joinedCommunities.slice(0, 3).map((community) => {
+                      const IconComponent =
+                        communityTypeIcons[community.type] || Users;
+                      return (
+                        <Link
+                          key={community._id}
+                          href={`/communities/${community._id}`}
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 hover:bg-accent border border-transparent hover:border-border group"
+                        >
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-900/50 to-purple-900/50 flex items-center justify-center flex-shrink-0">
+                            <IconComponent className="w-4 h-4 text-red-200" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-foreground truncate group-hover:text-red-200 transition-colors">
+                              {community.name}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {community.memberCount ||
+                                community.stats?.memberCount ||
+                                0}{" "}
+                              members
+                            </p>
+                          </div>
+                        </Link>
+                      );
+                    })}
 
-                <Link
-                  href="/communities"
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm text-muted-foreground hover:bg-accent hover:text-foreground border border-transparent"
-                >
-                  <Globe className="w-4 h-4" />
-                  <span>Explore Communities</span>
-                </Link>
+                    {joinedCommunities.length > 3 && (
+                      <Link
+                        href="/communities"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm text-muted-foreground hover:bg-accent hover:text-foreground border border-transparent"
+                      >
+                        <Users className="w-4 h-4" />
+                        <span>View All ({joinedCommunities.length})</span>
+                      </Link>
+                    )}
+
+                    <Link
+                      href="/communities"
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm text-muted-foreground hover:bg-accent hover:text-foreground border border-transparent"
+                    >
+                      <Globe className="w-4 h-4" />
+                      <span>Explore Communities</span>
+                    </Link>
+                  </>
+                )}
               </div>
             ) : (
               <div className="px-3 py-4 text-center">

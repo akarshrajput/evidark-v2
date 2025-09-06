@@ -8,7 +8,7 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-// Netflix-inspired compact logo with spooky theme
+// Professional Netflix-inspired EviDark logo
 const EvidarkLogo = ({ className = "h-8" }) => (
   <svg
     viewBox="0 0 200 40"
@@ -16,152 +16,109 @@ const EvidarkLogo = ({ className = "h-8" }) => (
     xmlns="http://www.w3.org/2000/svg"
   >
     <defs>
-      <linearGradient id="netflixGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stopColor="#dc2626" />
-        <stop offset="50%" stopColor="#b91c1c" />
-        <stop offset="100%" stopColor="#991b1b" />
+      <linearGradient id="evidarkGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="#ef4444" />
+        <stop offset="30%" stopColor="#f87171" />
+        <stop offset="70%" stopColor="#ef4444" />
+        <stop offset="100%" stopColor="#dc2626" />
       </linearGradient>
-      <filter id="subtleGlow">
-        <feGaussianBlur stdDeviation="1" result="coloredBlur" />
+      <linearGradient id="evidarkGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="#ef4444" stopOpacity="0.8" />
+        <stop offset="50%" stopColor="#f87171" stopOpacity="1" />
+        <stop offset="100%" stopColor="#dc2626" stopOpacity="0.8" />
+      </linearGradient>
+      <filter
+        id="professionalGlow"
+        x="-50%"
+        y="-50%"
+        width="200%"
+        height="200%"
+      >
+        <feGaussianBlur stdDeviation="2" result="coloredBlur" />
         <feMerge>
           <feMergeNode in="coloredBlur" />
           <feMergeNode in="SourceGraphic" />
         </feMerge>
       </filter>
+      <filter id="textShadow" x="-50%" y="-50%" width="200%" height="200%">
+        <feDropShadow
+          dx="1"
+          dy="1"
+          stdDeviation="1"
+          floodColor="#000000"
+          floodOpacity="0.8"
+        />
+      </filter>
     </defs>
 
     {/* E */}
-    <rect
-      x="10"
-      y="8"
-      width="20"
-      height="4"
-      fill="url(#netflixGradient)"
-      filter="url(#subtleGlow)"
-    />
-    <rect
-      x="10"
-      y="8"
-      width="4"
-      height="24"
-      fill="url(#netflixGradient)"
-      filter="url(#subtleGlow)"
-    />
-    <rect
-      x="10"
-      y="18"
-      width="16"
-      height="4"
-      fill="url(#netflixGradient)"
-      filter="url(#subtleGlow)"
-    />
-    <rect
-      x="10"
-      y="28"
-      width="20"
-      height="4"
-      fill="url(#netflixGradient)"
-      filter="url(#subtleGlow)"
-    />
+    <g>
+      <rect x="12" y="8" width="18" height="3" fill="#ef4444" rx="1" />
+      <rect x="12" y="8" width="3" height="24" fill="#ef4444" rx="1" />
+      <rect x="12" y="18.5" width="14" height="3" fill="#ef4444" rx="1" />
+      <rect x="12" y="29" width="18" height="3" fill="#ef4444" rx="1" />
+    </g>
 
     {/* V */}
-    <polygon
-      points="40,8 44,8 50,28 52,28 58,8 62,8 54,32 48,32"
-      fill="url(#netflixGradient)"
-      filter="url(#subtleGlow)"
-    />
+    <g>
+      <polygon
+        points="38,8 42,8 48,28 50,28 56,8 60,8 52,32 46,32"
+        fill="#ef4444"
+      />
+    </g>
 
     {/* I */}
-    <rect
-      x="72"
-      y="8"
-      width="4"
-      height="24"
-      fill="url(#netflixGradient)"
-      filter="url(#subtleGlow)"
-    />
-    <circle
-      cx="74"
-      cy="4"
-      r="2"
-      fill="url(#netflixGradient)"
-      filter="url(#subtleGlow)"
-    />
+    <g>
+      <rect x="70" y="8" width="3" height="24" fill="#ef4444" rx="1" />
+      <circle cx="71.5" cy="4" r="1.5" fill="#ef4444" />
+    </g>
 
     {/* D */}
-    <rect
-      x="86"
-      y="8"
-      width="4"
-      height="24"
-      fill="url(#netflixGradient)"
-      filter="url(#subtleGlow)"
-    />
-    <path
-      d="M90 8 L102 8 Q108 8 108 20 Q108 32 102 32 L90 32 Z"
-      fill="url(#netflixGradient)"
-      filter="url(#subtleGlow)"
-    />
-    <path
-      d="M94 12 L102 12 Q104 12 104 20 Q104 28 102 28 L94 28 Z"
-      fill="#0a0a0b"
-    />
+    <g>
+      <rect x="82" y="8" width="3" height="24" fill="#ef4444" rx="1" />
+      <path
+        d="M82,8 L95,8 Q103,8 103,20 Q103,32 95,32 L82,32"
+        fill="#ef4444"
+        stroke="none"
+      />
+    </g>
 
     {/* A */}
-    <polygon
-      points="118,32 122,32 124,26 132,26 134,32 138,32 130,8 126,8"
-      fill="url(#netflixGradient)"
-      filter="url(#subtleGlow)"
-    />
-    <rect x="125" y="20" width="6" height="3" fill="#0a0a0b" />
+    <g>
+      <polygon
+        points="114,32 118,32 119,28 125,28 126,32 130,32 122,8 117,8"
+        fill="#ef4444"
+      />
+      <rect x="120" y="22" width="4" height="3" fill="#ef4444" rx="1" />
+    </g>
 
     {/* R */}
-    <rect
-      x="148"
-      y="8"
-      width="4"
-      height="24"
-      fill="url(#netflixGradient)"
-      filter="url(#subtleGlow)"
-    />
-    <path
-      d="M152 8 L162 8 Q166 8 166 16 Q166 20 162 20 L152 20 Z"
-      fill="url(#netflixGradient)"
-      filter="url(#subtleGlow)"
-    />
-    <path
-      d="M156 12 L162 12 Q162 12 162 16 Q162 16 162 16 L156 16 Z"
-      fill="#0a0a0b"
-    />
-    <polygon
-      points="160,20 164,20 168,32 172,32 166,20"
-      fill="url(#netflixGradient)"
-      filter="url(#subtleGlow)"
-    />
+    <g>
+      <rect x="140" y="8" width="3" height="24" fill="#ef4444" rx="1" />
+      <path
+        d="M140,8 L154,8 Q158,8 158,16 Q158,20 154,20 L140,20"
+        fill="#ef4444"
+      />
+      <polygon points="150,20 154,20 158,32 154,32" fill="#ef4444" />
+    </g>
 
     {/* K */}
-    <rect
-      x="182"
-      y="8"
-      width="4"
-      height="24"
-      fill="url(#netflixGradient)"
-      filter="url(#subtleGlow)"
-    />
-    <polygon
-      points="186,20 190,8 194,8 188,22 194,32 190,32"
-      fill="url(#netflixGradient)"
-      filter="url(#subtleGlow)"
-    />
+    <g>
+      <rect x="168" y="8" width="3" height="24" fill="#ef4444" rx="1" />
+      <polygon
+        points="171,20 178,8 182,8 175,20 182,32 178,32"
+        fill="#ef4444"
+      />
+    </g>
 
-    {/* Subtle accent dot */}
+    {/* Professional accent dot */}
     <circle
-      cx="196"
+      cx="190"
       cy="12"
-      r="1.5"
-      fill="#fbbf24"
-      opacity="0.8"
-      filter="url(#subtleGlow)"
+      r="2"
+      fill="#f97316"
+      opacity="0.9"
+      filter="url(#professionalGlow)"
     />
   </svg>
 );
@@ -169,8 +126,6 @@ const EvidarkLogo = ({ className = "h-8" }) => (
 const Logo = ({ size = "default", showText = true, compact = false }) => {
   const logoHeight =
     size === "small" ? "h-6" : size === "large" ? "h-10" : "h-8";
-  const textSize =
-    size === "small" ? "text-lg" : size === "large" ? "text-2xl" : "text-xl";
 
   if (compact) {
     return (
@@ -186,10 +141,8 @@ const Logo = ({ size = "default", showText = true, compact = false }) => {
 
   return (
     <Link href="/" className="group">
-      <div className="flex items-center gap-2 transition-all duration-300 hover:scale-105">
-        <EvidarkLogo
-          className={`${logoHeight} transition-all duration-300 group-hover:drop-shadow-lg group-hover:drop-shadow-red-500/30`}
-        />
+      <div className="flex items-center gap-2 transition-all duration-300">
+        <EvidarkLogo className={`${logoHeight} transition-all duration-300`} />
       </div>
     </Link>
   );

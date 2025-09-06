@@ -344,74 +344,71 @@ export default function MainPage() {
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-3">
-            {/* Filter Buttons */}
-            <FilterButtons
-              activeFilter={activeFilter}
-              onFilterChange={setActiveFilter}
-            />
+    <div className="min-h-screen space-y-6">
+      {/* Filter Section */}
+      <FilterButtons
+        activeFilter={activeFilter}
+        onFilterChange={setActiveFilter}
+      />
 
-            {/* Stories Grid */}
-            {storiesLoading ? (
-              <div className="grid gap-6">
-                {[...Array(6)].map((_, i) => (
-                  <SpookyStoryCardSkeleton key={i} />
-                ))}
-              </div>
-            ) : storiesError ? (
-              <div className="text-center py-12">
-                <Skull className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                <p className="text-muted-foreground">
-                  {activeFilter === "following"
-                    ? "Unable to load stories from people you follow..."
-                    : "Failed to load stories. The darkness consumed them..."}
-                </p>
-              </div>
-            ) : stories.length === 0 && activeFilter === "following" ? (
-              <div className="text-center py-12">
-                <Users className="w-12 h-12 text-blue-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">
-                  No Stories from Following
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  You&apos;re not following anyone yet, or the people you follow
-                  haven&apos;t published any stories.
-                </p>
-                <Button
-                  variant="outline"
-                  onClick={() => setActiveFilter("all")}
-                  className="border-blue-600/50 text-blue-200 hover:bg-blue-950/30"
-                >
-                  Explore All Stories
-                </Button>
-              </div>
-            ) : (
-              <div className="grid gap-6">
-                {stories.map((story, index) => (
-                  <StoryCard
-                    key={`${story._id}-${index}`}
-                    story={story}
-                    onVote={handleVote}
-                    onLike={handleLike}
-                    onBookmark={handleBookmark}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Loading more indicator */}
-            {isFetchingNextPage && <LoadingIndicator />}
+      {/* Stories Content */}
+      <div className="space-y-4">
+        {storiesLoading ? (
+          <>
+            {[...Array(6)].map((_, i) => (
+              <SpookyStoryCardSkeleton key={i} />
+            ))}
+          </>
+        ) : storiesError ? (
+          <div className="bg-card border border-border rounded-lg p-12 text-center">
+            <Skull className="w-12 h-12 text-red-500 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">
+              Failed to Load Stories
+            </h3>
+            <p className="text-muted-foreground">
+              {activeFilter === "following"
+                ? "Unable to load stories from people you follow. Please try again."
+                : "The darkness consumed the stories. Please refresh the page."}
+            </p>
           </div>
-
-          {/* Right Sidebar */}
-          <div className="lg:col-span-1">
-            <RightSidebar />
+        ) : stories.length === 0 && activeFilter === "following" ? (
+          <div className="bg-card border border-border rounded-lg p-12 text-center">
+            <Users className="w-12 h-12 text-blue-400 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">
+              No Stories from Following
+            </h3>
+            <p className="text-muted-foreground mb-6">
+              You&apos;re not following anyone yet, or the people you follow
+              haven&apos;t published any stories.
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => setActiveFilter("all")}
+              className="border-blue-600/50 text-blue-200 hover:bg-blue-950/30"
+            >
+              Explore All Stories
+            </Button>
           </div>
-        </div>
+        ) : (
+          <>
+            {stories.map((story, index) => (
+              <StoryCard
+                key={`${story._id}-${index}`}
+                story={story}
+                onVote={handleVote}
+                onLike={handleLike}
+                onBookmark={handleBookmark}
+              />
+            ))}
+          </>
+        )}
+
+        {/* Loading more indicator */}
+        {isFetchingNextPage && (
+          <div className="py-8 flex justify-center">
+            <LoadingIndicator />
+          </div>
+        )}
       </div>
     </div>
   );

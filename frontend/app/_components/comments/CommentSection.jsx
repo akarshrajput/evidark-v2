@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -518,19 +517,20 @@ export default function CommentSection({ storyId }) {
 
   return (
     <>
-      <Card className="bg-card/50 backdrop-blur-sm border-border">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-primary" />
+      <div className="bg-background/30 backdrop-blur-sm rounded-lg p-6">
+        <div className="flex items-center gap-2 mb-6">
+          <MessageSquare className="w-5 h-5 text-primary" />
+          <h3 className="text-lg font-semibold">
             Dark Whispers ({comments.length})
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
+          </h3>
+        </div>
+
+        <div className="space-y-6">
           {/* Comment Form */}
           {isAuthenticated ? (
             <form onSubmit={handleSubmitComment} className="space-y-4">
               <div className="flex items-start gap-3">
-                <Avatar className="w-8 h-8 border border-border/50">
+                <Avatar className="w-8 h-8">
                   <AvatarImage src={user.avatar} alt={user.name} />
                   <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-700 text-white text-sm">
                     {user.name?.[0] || "U"}
@@ -541,7 +541,7 @@ export default function CommentSection({ storyId }) {
                     placeholder="Share your thoughts on this dark tale..."
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
-                    className="min-h-[100px] bg-background/50 border-border/50 focus:border-primary/50 resize-none"
+                    className="min-h-[100px] bg-background/50 border-none shadow-sm shadow-black/30 focus:shadow-md focus:shadow-black/40 resize-none"
                     disabled={submitting}
                   />
                   <div className="flex justify-between items-center mt-3">
@@ -551,7 +551,7 @@ export default function CommentSection({ storyId }) {
                     <Button
                       type="submit"
                       disabled={!newComment.trim() || submitting}
-                      className="spooky-glow"
+                      className="bg-red-600 hover:bg-red-700 text-white border-none shadow-sm shadow-black/30 hover:shadow-md hover:shadow-black/40 transition-all duration-200"
                     >
                       {submitting ? "Whispering..." : "Whisper into the Void"}
                     </Button>
@@ -560,17 +560,18 @@ export default function CommentSection({ storyId }) {
               </div>
             </form>
           ) : (
-            <Card className="bg-background/30 border-border/50">
-              <CardContent className="p-6 text-center">
-                <Ghost className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-                <p className="text-muted-foreground mb-4">
-                  Join the darkness to share your thoughts
-                </p>
-                <Button asChild className="spooky-glow">
-                  <a href="/login">Sign In to Comment</a>
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="bg-background/50 rounded-lg p-6 text-center">
+              <Ghost className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
+              <p className="text-muted-foreground mb-4">
+                Join the darkness to share your thoughts
+              </p>
+              <Button
+                asChild
+                className="bg-red-600 hover:bg-red-700 text-white border-none shadow-sm shadow-black/30 hover:shadow-md hover:shadow-black/40 transition-all duration-200"
+              >
+                <a href="/login">Sign In to Comment</a>
+              </Button>
+            </div>
           )}
 
           {/* Comments List */}
@@ -578,36 +579,32 @@ export default function CommentSection({ storyId }) {
             {loading ? (
               <div className="space-y-4">
                 {[...Array(3)].map((_, i) => (
-                  <Card
+                  <div
                     key={i}
-                    className="bg-background/30 border-border/50 animate-pulse"
+                    className="bg-background/50 rounded-lg p-4 animate-pulse"
                   >
-                    <CardContent className="p-4">
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 bg-muted rounded-full"></div>
-                        <div className="flex-1 space-y-2">
-                          <div className="h-4 bg-muted rounded w-1/4"></div>
-                          <div className="h-3 bg-muted rounded w-3/4"></div>
-                          <div className="h-3 bg-muted rounded w-1/2"></div>
-                        </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 bg-muted rounded-full"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-muted rounded w-1/4"></div>
+                        <div className="h-3 bg-muted rounded w-3/4"></div>
+                        <div className="h-3 bg-muted rounded w-1/2"></div>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 ))}
               </div>
             ) : comments.length === 0 ? (
-              <Card className="bg-background/30 border-border/50">
-                <CardContent className="p-8 text-center">
-                  <Skull className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold mb-2">
-                    Silence in the Void
-                  </h3>
-                  <p className="text-muted-foreground">
-                    No whispers have been heard yet. Be the first to break the
-                    silence.
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="bg-background/50 rounded-lg p-8 text-center">
+                <Skull className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">
+                  Silence in the Void
+                </h3>
+                <p className="text-muted-foreground">
+                  No whispers have been heard yet. Be the first to break the
+                  silence.
+                </p>
+              </div>
             ) : (
               comments.map((comment) => (
                 <Comment
@@ -622,12 +619,12 @@ export default function CommentSection({ storyId }) {
               ))
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent className="bg-card border-border">
+        <AlertDialogContent className="bg-background border border-border/30">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Comment</AlertDialogTitle>
             <AlertDialogDescription className="text-muted-foreground">
@@ -637,7 +634,7 @@ export default function CommentSection({ storyId }) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-border hover:bg-background hover:text-foreground">
+            <AlertDialogCancel className="border-none bg-secondary/50 hover:bg-secondary/70 hover:text-foreground">
               Keep Comment
             </AlertDialogCancel>
             <AlertDialogAction

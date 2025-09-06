@@ -1,6 +1,9 @@
 import { Inter, Creepster, Nosifer } from "next/font/google";
 import "./globals.css";
-import Header from "./_components/main/Header";
+import DashboardSidebar from "./_components/main/DashboardSidebar";
+import DashboardRightSidebar from "./_components/main/DashboardRightSidebar";
+import TopNavigation from "./_components/main/TopNavigation";
+import MobileNavigation from "./_components/main/MobileNavigation";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/contexts/AuthContext";
 import QueryProvider from "./_components/providers/QueryProvider";
@@ -67,19 +70,54 @@ export default function RootLayout({ children }) {
       >
         <QueryProvider>
           <AuthProvider>
-            <div className="fixed top-0 z-50 w-full bg-background/95 backdrop-blur-sm border-none shadow-2xl shadow-black/50">
-              <Header />
+            {/* Mobile Navigation */}
+            <MobileNavigation />
+
+            {/* Desktop Layout - Fixed Professional Structure */}
+            <div className="hidden lg:block fixed-layout">
+              {/* Fixed Header */}
+              <header className="fixed-header evidark-nav">
+                <div className="px-6 py-2.5 h-full flex items-center">
+                  <TopNavigation />
+                </div>
+              </header>
+
+              {/* Fixed Left Sidebar */}
+              <aside className="fixed-sidebar-left evidark-sidebar">
+                <div className="h-full overflow-y-auto">
+                  <DashboardSidebar />
+                </div>
+              </aside>
+
+              {/* Fixed Main Content Area */}
+              <main className="fixed-main-content bg-background">
+                <div className="h-full overflow-y-auto">
+                  <div className="px-8 py-8 min-h-full">{children}</div>
+                </div>
+              </main>
+
+              {/* Fixed Right Sidebar */}
+              <aside className="fixed-sidebar-right evidark-sidebar">
+                <div className="h-full overflow-y-auto">
+                  <DashboardRightSidebar />
+                </div>
+              </aside>
             </div>
-            <div className="pt-16">{children}</div>
+
+            {/* Mobile Layout */}
+            <div className="lg:hidden">
+              <div className="pt-16 pb-20 min-h-screen px-4">{children}</div>
+            </div>
+
             <Toaster
               position="bottom-right"
               theme="dark"
               toastOptions={{
                 style: {
-                  background: "#111113",
-                  color: "#e4e4e7",
-                  border: "none",
-                  boxShadow: "0 10px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(220, 38, 38, 0.2)",
+                  background: "#161b22",
+                  color: "#f0f6fc",
+                  border: "1px solid #30363d",
+                  boxShadow: "0 10px 40px rgba(0, 0, 0, 0.4)",
                 },
               }}
             />

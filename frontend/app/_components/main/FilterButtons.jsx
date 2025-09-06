@@ -15,27 +15,32 @@ const filterOptions = [
 export default function FilterButtons({ activeFilter, onFilterChange }) {
   const { isAuthenticated } = useAuth();
   return (
-    <div className="flex items-center gap-4 mb-6">
-      <Filter className="w-4 h-4 text-muted-foreground" />
-      <div className="flex gap-4">
-        {filterOptions
-          .filter(option => !option.authRequired || isAuthenticated)
-          .map(({ key, label, icon: Icon }) => (
-            <Button
-              key={key}
-              variant="outline"
-              size="sm"
-              onClick={() => onFilterChange(key)}
-              className={`transition-all duration-200 border-none ${
-                activeFilter === key
-                  ? "spooky-glow"
-                  : "shadow-md shadow-black/40 hover:shadow-lg hover:shadow-black/50 hover:bg-red-600/10 bg-secondary/50"
-              }`}
-            >
-              <Icon className="w-3 h-3 mr-1" />
-              {label}
-            </Button>
-          ))}
+    <div className=" evidark-card rounded-xl p-4 mb-6 border-none">
+      <div className="flex items-center gap-3 overflow-x-auto">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground whitespace-nowrap">
+          <Filter className="w-4 h-4" />
+          <span className="font-medium">Filter:</span>
+        </div>
+        <div className="flex gap-2">
+          {filterOptions
+            .filter((option) => !option.authRequired || isAuthenticated)
+            .map(({ key, label, icon: Icon }) => (
+              <Button
+                key={key}
+                variant={activeFilter === key ? "default" : "outline"}
+                size="sm"
+                onClick={() => onFilterChange(key)}
+                className={`whitespace-nowrap rounded-lg transition-all duration-300 ${
+                  activeFilter === key
+                    ? "evidark-btn-primary"
+                    : "evidark-btn-secondary"
+                }`}
+              >
+                <Icon className="w-3 h-3 mr-2" />
+                {label}
+              </Button>
+            ))}
+        </div>
       </div>
     </div>
   );

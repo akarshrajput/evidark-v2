@@ -163,12 +163,12 @@ const Header = () => {
 
       <div className="flex items-center gap-4">
         <div className="hidden md:block">
-          <SearchBar 
+          <SearchBar
             className="w-80"
             placeholder="Search stories, users, communities..."
           />
         </div>
-        
+
         {/* Mobile Search */}
         <MobileSearch />
 
@@ -204,9 +204,9 @@ const Header = () => {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-10 w-10 rounded-full border-none shadow-md shadow-black/40 hover:shadow-lg hover:shadow-black/50 transition-all duration-200"
+                  className="relative h-8 w-8 rounded-full border-none shadow-md shadow-black/40 hover:shadow-lg hover:shadow-black/50 transition-all duration-200"
                 >
-                  <Avatar className="h-10 w-10">
+                  <Avatar className="h-8 w-8">
                     <AvatarImage src={user?.avatar} alt={user?.name} />
                     <AvatarFallback className="bg-red-900/50 text-red-100">
                       {user?.name?.[0]?.toUpperCase() ||

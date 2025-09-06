@@ -44,106 +44,224 @@
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 
-  /* Professional Spooky Dark Theme */
-  --background: #0a0a0b;
-  --foreground: #e4e4e7;
-  --card: #111113;
-  --card-foreground: #e4e4e7;
-  --popover: #111113;
-  --popover-foreground: #e4e4e7;
+  /* Professional Dark Theme - EviDark */
+  --background: #0a0a0a;
+  --foreground: #f5f5f5;
+  --card: #111111;
+  --card-foreground: #f5f5f5;
+  --popover: #111111;
+  --popover-foreground: #f5f5f5;
   --primary: #dc2626;
-  --primary-foreground: #fafafa;
-  --secondary: #1a1a1d;
-  --secondary-foreground: #e4e4e7;
-  --muted: #1a1a1d;
-  --muted-foreground: #a1a1aa;
-  --accent: #7c2d12;
-  --accent-foreground: #fafafa;
-  --destructive: #dc2626;
-  --destructive-foreground: #fafafa;
-  --border: transparent;
-  --input: #1a1a1d;
+  --primary-foreground: #ffffff;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #f5f5f5;
+  --muted: #1f1f1f;
+  --muted-foreground: #888888;
+  --accent: #2a2a2a;
+  --accent-foreground: #f5f5f5;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #2a2a2a;
+  --input: #1a1a1a;
   --ring: #dc2626;
 
-  /* Professional Spooky Colors */
-  --blood-red: #8b0000;
-  --crimson: #dc143c;
-  --dark-purple: #301934;
-  --midnight: #0f0f23;
-  --shadow: #18181b;
-  --ember: #ff6b35;
-  --bone: #f8f8ff;
-  --deep-black: #000000;
-  --charcoal: #1c1c1e;
-  --smoke: #2c2c2e;
-  
+  /* Professional Dark Color Palette */
+  --dark-primary: #0a0a0a;
+  --dark-secondary: #111111;
+  --dark-tertiary: #1a1a1a;
+  --dark-quaternary: #2a2a2a;
+  --accent-red: #dc2626;
+  --accent-red-hover: #ef4444;
+  --accent-orange: #f97316;
+  --accent-purple: #8b5cf6;
+  --text-primary: #f5f5f5;
+  --text-secondary: #cccccc;
+  --text-muted: #888888;
+
+  /* Professional Solid Colors */
+  --card-bg: #111111;
+  --card-border: #2a2a2a;
+  --btn-primary: #dc2626;
+  --btn-primary-hover: #ef4444;
+  --btn-secondary: #1a1a1a;
+  --btn-secondary-hover: #2a2a2a;
+
   /* Professional Shadow System */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 6px 20px rgba(0, 0, 0, 0.6);
-  --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.7);
-  --shadow-2xl: 0 12px 32px rgba(0, 0, 0, 0.8);
-  --shadow-spooky: 0 4px 16px rgba(220, 38, 38, 0.15);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 6px 20px rgba(0, 0, 0, 0.8);
+  --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.9);
+  --shadow-red: 0 4px 16px rgba(220, 38, 38, 0.25);
+  --shadow-red-lg: 0 6px 20px rgba(220, 38, 38, 0.35);
 }
 
 .dark {
-  --background: #0a0a0b;
-  --foreground: #e4e4e7;
-  --card: #111113;
-  --card-foreground: #e4e4e7;
-  --popover: #111113;
-  --popover-foreground: #e4e4e7;
+  --background: #0a0a0a;
+  --foreground: #f5f5f5;
+  --card: #111111;
+  --card-foreground: #f5f5f5;
+  --popover: #111111;
+  --popover-foreground: #f5f5f5;
   --primary: #dc2626;
-  --primary-foreground: #fafafa;
-  --secondary: #1a1a1d;
-  --secondary-foreground: #e4e4e7;
-  --muted: #1a1a1d;
-  --muted-foreground: #a1a1aa;
-  --accent: #7c2d12;
-  --accent-foreground: #fafafa;
-  --destructive: #dc2626;
-  --destructive-foreground: #fafafa;
-  --border: transparent;
-  --input: #1a1a1d;
+  --primary-foreground: #ffffff;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #f5f5f5;
+  --muted: #1f1f1f;
+  --muted-foreground: #888888;
+  --accent: #2a2a2a;
+  --accent-foreground: #f5f5f5;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #2a2a2a;
+  --input: #1a1a1a;
   --ring: #dc2626;
 }
 
 @layer base {
   * {
-    border: none;
-    outline: 2px solid transparent;
-    outline-offset: 2px;
+    border-color: hsl(var(--border));
   }
-  
+
   body {
     background: var(--background);
     color: var(--foreground);
-    font-family: var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont,
+      "Segoe UI", sans-serif;
     font-feature-settings: "cv11", "ss01";
     font-variant-numeric: tabular-nums;
+    min-height: 100vh;
+  }
+
+  /* Professional Card Styles */
+  .evidark-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+  }
+
+  .evidark-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
   }
 
   /* Professional Button Styles */
-  .spooky-glow {
-    background: linear-gradient(135deg, #dc2626 0%, #7c2d12 50%, #991b1b 100%);
+  .evidark-btn-primary {
+    background: var(--btn-primary);
     color: white;
-    box-shadow: var(--shadow-md);
-    transition: all 0.2s ease;
+    box-shadow: var(--shadow-red);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: none;
+    position: relative;
+    overflow: hidden;
   }
-  
-  .spooky-glow:hover {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%);
-    box-shadow: var(--shadow-lg);
+
+  .evidark-btn-primary:hover {
+    background: var(--btn-primary-hover);
+    box-shadow: var(--shadow-red-lg);
+    transform: translateY(-2px);
+  }
+
+  .evidark-btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .evidark-btn-secondary {
+    background: var(--btn-secondary);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .evidark-btn-secondary:hover {
+    background: var(--btn-secondary-hover);
+    box-shadow: var(--shadow-md);
     transform: translateY(-1px);
   }
 
-  .evidark-logo {
-    font-family: var(--font-creepster), "Creepster", cursive;
-    color: #dc2626;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  /* Professional Input Styles */
+  .evidark-input {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+  }
+
+  .evidark-input:focus {
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    background: var(--card);
+  }
+
+  /* Professional Navigation */
+  .evidark-nav {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .evidark-sidebar {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+  }
+
+  /* Fixed Layout Styles */
+  .fixed-layout {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    z-index: 50;
+  }
+
+  .fixed-sidebar-left {
+    position: fixed;
+    left: 0;
+    top: 56px;
+    bottom: 0;
+    width: 256px;
+    z-index: 40;
+    overflow: hidden;
+  }
+
+  .fixed-sidebar-right {
+    position: fixed;
+    right: 0;
+    top: 56px;
+    bottom: 0;
+    width: 320px;
+    z-index: 40;
+    overflow: hidden;
+  }
+
+  .fixed-main-content {
+    position: fixed;
+    left: 256px;
+    right: 320px;
+    top: 56px;
+    bottom: 0;
+    z-index: 30;
+    overflow: hidden;
+  }
+
+  /* Prevent layout shifts */
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
   }
 
   @keyframes spooky-gradient {
@@ -171,7 +289,12 @@
 
   /* Professional Card Styles */
   .spooky-card {
-    background: linear-gradient(135deg, rgba(17, 17, 19, 0.95) 0%, rgba(26, 26, 29, 0.8) 50%, rgba(44, 44, 46, 0.6) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(17, 17, 19, 0.95) 0%,
+      rgba(26, 26, 29, 0.8) 50%,
+      rgba(44, 44, 46, 0.6) 100%
+    );
     backdrop-filter: blur(20px);
     border: none;
     box-shadow: var(--shadow-md);
@@ -181,9 +304,14 @@
 
   .spooky-card:hover {
     box-shadow: var(--shadow-lg);
-    background: linear-gradient(135deg, rgba(17, 17, 19, 1) 0%, rgba(26, 26, 29, 0.9) 50%, rgba(44, 44, 46, 0.7) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(17, 17, 19, 1) 0%,
+      rgba(26, 26, 29, 0.9) 50%,
+      rgba(44, 44, 46, 0.7) 100%
+    );
   }
-  
+
   /* Professional Input Styles */
   .spooky-input {
     background: rgba(26, 26, 29, 0.8);
@@ -191,7 +319,7 @@
     box-shadow: var(--shadow-sm), inset 0 2px 4px rgba(0, 0, 0, 0.6);
     transition: all 0.2s ease;
   }
-  
+
   .spooky-input:focus {
     box-shadow: var(--shadow-md), inset 0 2px 4px rgba(0, 0, 0, 0.6);
     background: rgba(26, 26, 29, 0.95);
@@ -210,13 +338,26 @@
 
   /* Professional Gradient Backgrounds */
   .horror-gradient {
-    background: linear-gradient(135deg, #0a0a0b 0%, #111113 25%, #1a1a1d 50%, #2c2c2e 75%, #7c2d12 100%);
+    background: linear-gradient(
+      135deg,
+      #0a0a0b 0%,
+      #111113 25%,
+      #1a1a1d 50%,
+      #2c2c2e 75%,
+      #7c2d12 100%
+    );
   }
-  
+
   .spooky-gradient-bg {
-    background: linear-gradient(135deg, #0a0a0b 0%, #111113 20%, #1a1a1d 40%, #7c2d12 100%);
+    background: linear-gradient(
+      135deg,
+      #0a0a0b 0%,
+      #111113 20%,
+      #1a1a1d 40%,
+      #7c2d12 100%
+    );
   }
-  
+
   .professional-card {
     background: rgba(17, 17, 19, 0.8);
     backdrop-filter: blur(16px);
@@ -225,12 +366,12 @@
     border-radius: var(--radius);
     transition: all 0.2s ease;
   }
-  
+
   .professional-card:hover {
     box-shadow: var(--shadow-lg);
     background: rgba(17, 17, 19, 0.9);
   }
-  
+
   /* Professional Button Variants */
   .btn-primary {
     background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
@@ -239,12 +380,12 @@
     box-shadow: var(--shadow-sm);
     transition: all 0.2s ease;
   }
-  
+
   .btn-primary:hover {
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     box-shadow: var(--shadow-md);
   }
-  
+
   .btn-secondary {
     background: rgba(26, 26, 29, 0.8);
     color: var(--foreground);
@@ -252,7 +393,7 @@
     box-shadow: var(--shadow-sm);
     transition: all 0.2s ease;
   }
-  
+
   .btn-secondary:hover {
     background: rgba(44, 44, 46, 0.9);
     box-shadow: var(--shadow-md);

@@ -7,6 +7,7 @@ import { Roboto_Slab } from "next/font/google";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import StoryCompletionTracker from "./StoryCompletionTracker";
 
 export default function StoryContentClient({ initialStory }) {
   const { user, isAuthenticated, loading } = useAuth();
@@ -98,32 +99,34 @@ export default function StoryContentClient({ initialStory }) {
             <div className="h-4 bg-muted/20 rounded w-5/6"></div>
           </div>
         ) : (
-          <article
-            className="prose prose-invert prose-xl max-w-none 
-                      leading-[1.65] tracking-[0.01em] text-stone-300
-                      [&>*]:mb-6 [&>*:last-child]:mb-0
-                      [&>p]:text-[1.125rem] [&>p]:leading-[1.7] [&>p]:mb-6 [&>p]:text-stone-300
-                      [&>h1]:text-3xl [&>h1]:font-bold [&>h1]:leading-[1.25] [&>h1]:mb-8 [&>h1]:mt-12 [&>h1:first-child]:mt-0 [&>h1]:text-stone-200
-                      [&>h2]:text-2xl [&>h2]:font-semibold [&>h2]:leading-[1.35] [&>h2]:mb-6 [&>h2]:mt-10 [&>h2]:text-stone-200
-                      [&>h3]:text-xl [&>h3]:font-medium [&>h3]:leading-[1.45] [&>h3]:mb-4 [&>h3]:mt-8 [&>h3]:text-stone-200
-                      [&>h4]:text-lg [&>h4]:font-medium [&>h4]:leading-[1.45] [&>h4]:mb-4 [&>h4]:mt-6 [&>h4]:text-stone-300
-                      [&>h5]:text-base [&>h5]:font-medium [&>h5]:leading-[1.55] [&>h5]:mb-3 [&>h5]:mt-5 [&>h5]:text-stone-300
-                      [&>h6]:text-sm [&>h6]:font-medium [&>h6]:leading-[1.55] [&>h6]:mb-3 [&>h6]:mt-4 [&>h6]:text-stone-300
-                      [&>ul]:mb-6 [&>ol]:mb-6 [&>ul>li]:mb-2 [&>ol>li]:mb-2
-                      [&>blockquote]:pl-6 [&>blockquote]:py-2 [&>blockquote]:mb-6
-                      [&>blockquote]:italic [&>blockquote]:text-stone-500
-                      [&>code]:bg-stone-800/50 [&>code]:px-2 [&>code]:py-1 [&>code]:rounded [&>code]:text-sm [&>code]:text-stone-300
-                      [&>pre]:bg-stone-800/30 [&>pre]:p-4 [&>pre]:rounded-lg [&>pre]:mb-6 [&>pre]:overflow-x-auto [&>pre]:text-stone-300
-                      [&>img]:rounded-none [&>img]:mb-6 [&>img]:shadow-none [&>img]:border-none [&>img]:outline-none
-                      [&>hr]:border-stone-700 [&>hr]:my-8
-                      [&>table]:mb-6 [&>table]:border-collapse [&>table]:w-full
-                      [&>table_th]:px-4 [&>table_th]:py-2 [&>table_th]:text-stone-300
-                      [&>table_td]:px-4 [&>table_td]:py-2 [&>table_td]:text-stone-300
-                      [&_strong]:font-semibold [&_strong]:text-stone-200 [&_em]:italic [&_em]:text-stone-300
-                      [&_a]:text-blue-500 [&_a]:underline [&_a]:decoration-1 [&_a]:underline-offset-2
-                      [&_a:hover]:decoration-2 [&_a:hover]:text-blue-400"
-            dangerouslySetInnerHTML={{ __html: story.content }}
-          />
+          <StoryCompletionTracker storyId={story._id}>
+            <article
+              className="prose prose-invert prose-xl max-w-none 
+                        leading-[1.65] tracking-[0.01em] text-stone-300
+                        [&>*]:mb-6 [&>*:last-child]:mb-0
+                        [&>p]:text-[1.125rem] [&>p]:leading-[1.7] [&>p]:mb-6 [&>p]:text-stone-300
+                        [&>h1]:text-3xl [&>h1]:font-bold [&>h1]:leading-[1.25] [&>h1]:mb-8 [&>h1]:mt-12 [&>h1:first-child]:mt-0 [&>h1]:text-stone-200
+                        [&>h2]:text-2xl [&>h2]:font-semibold [&>h2]:leading-[1.35] [&>h2]:mb-6 [&>h2]:mt-10 [&>h2]:text-stone-200
+                        [&>h3]:text-xl [&>h3]:font-medium [&>h3]:leading-[1.45] [&>h3]:mb-4 [&>h3]:mt-8 [&>h3]:text-stone-200
+                        [&>h4]:text-lg [&>h4]:font-medium [&>h4]:leading-[1.45] [&>h4]:mb-4 [&>h4]:mt-6 [&>h4]:text-stone-300
+                        [&>h5]:text-base [&>h5]:font-medium [&>h5]:leading-[1.55] [&>h5]:mb-3 [&>h5]:mt-5 [&>h5]:text-stone-300
+                        [&>h6]:text-sm [&>h6]:font-medium [&>h6]:leading-[1.55] [&>h6]:mb-3 [&>h6]:mt-4 [&>h6]:text-stone-300
+                        [&>ul]:mb-6 [&>ol]:mb-6 [&>ul>li]:mb-2 [&>ol>li]:mb-2
+                        [&>blockquote]:pl-6 [&>blockquote]:py-2 [&>blockquote]:mb-6
+                        [&>blockquote]:italic [&>blockquote]:text-stone-500
+                        [&>code]:bg-stone-800/50 [&>code]:px-2 [&>code]:py-1 [&>code]:rounded [&>code]:text-sm [&>code]:text-stone-300
+                        [&>pre]:bg-stone-800/30 [&>pre]:p-4 [&>pre]:rounded-lg [&>pre]:mb-6 [&>pre]:overflow-x-auto [&>pre]:text-stone-300
+                        [&>img]:rounded-none [&>img]:mb-6 [&>img]:shadow-none [&>img]:border-none [&>img]:outline-none
+                        [&>hr]:border-stone-700 [&>hr]:my-8
+                        [&>table]:mb-6 [&>table]:border-collapse [&>table]:w-full
+                        [&>table_th]:px-4 [&>table_th]:py-2 [&>table_th]:text-stone-300
+                        [&>table_td]:px-4 [&>table_td]:py-2 [&>table_td]:text-stone-300
+                        [&_strong]:font-semibold [&_strong]:text-stone-200 [&_em]:italic [&_em]:text-stone-300
+                        [&_a]:text-blue-500 [&_a]:underline [&_a]:decoration-1 [&_a]:underline-offset-2
+                        [&_a:hover]:decoration-2 [&_a:hover]:text-blue-400"
+              dangerouslySetInnerHTML={{ __html: story.content }}
+            />
+          </StoryCompletionTracker>
         )}
       </div>
     );

@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Logo from "./Logo";
+import UserRankIndicator from "../user/UserRankIndicator";
 
 const TopNavigation = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -60,6 +61,9 @@ const TopNavigation = () => {
                 <span className="hidden sm:inline">Create</span>
               </Link>
             </Button>
+
+            {/* User Rank Indicator */}
+            <UserRankIndicator />
 
             {/* Notifications */}
             <Button

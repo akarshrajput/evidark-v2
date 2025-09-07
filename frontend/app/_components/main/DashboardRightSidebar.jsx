@@ -19,6 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
+import WeeklyLeaderboard from "./WeeklyLeaderboard";
 
 const DashboardRightSidebar = () => {
   const { user, isAuthenticated } = useAuth();
@@ -156,6 +157,9 @@ const DashboardRightSidebar = () => {
             )}
           </CardContent>
         </Card>
+
+        {/* Weekly Leaderboard */}
+        <WeeklyLeaderboard />
 
         {/* Who to follow */}
         {isAuthenticated && (

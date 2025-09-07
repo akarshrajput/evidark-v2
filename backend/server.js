@@ -22,6 +22,7 @@ import communityRoutes from "./routes/communities.js";
 import communityPostRoutes from "./routes/communityPosts.js";
 import trendingRoutes from "./routes/trending.js";
 import searchRoutes from "./routes/search.js";
+import engagementRoutes from "./routes/engagement.js";
 
 // Import middleware
 import { errorHandler } from "./middleware/errorHandler.js";
@@ -33,6 +34,10 @@ import connectDB from "./config/database.js";
 // Import socket handlers
 import { initSocket } from "./socket/socketHandlers.js";
 import { setSocketIO } from "./utils/notificationHelper.js";
+import {
+  startWeeklyRankingJob,
+  startWeeklyResetJob,
+} from "./utils/cronJobs.js";
 
 // Load environment variables
 dotenv.config();
@@ -118,6 +123,7 @@ app.use("/api/v1/communities", communityRoutes);
 app.use("/api/v1/community-posts", communityPostRoutes);
 app.use("/api/v1/trending", trendingRoutes);
 app.use("/api/v1/search", searchRoutes);
+app.use("/api/v1/engagement", engagementRoutes);
 
 // Error handling middleware
 app.use(notFound);
@@ -132,6 +138,10 @@ setSocketIO(io);
 
 // Make io accessible to routes
 app.set("io", io);
+
+// Start cron jobs
+startWeeklyRankingJob();
+startWeeklyResetJob();
 
 server.listen(PORT, () => {
   console.log(`🚀 EviDark Backend Server running on port ${PORT}`);

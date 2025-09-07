@@ -1,32 +1,33 @@
-import express from 'express';
-import { body, validationResult } from 'express-validator';
-import Comment from '../models/Comment.js';
-import Like from '../models/Like.js';
-import Story from '../models/Story.js';
-import { authenticate, optionalAuth } from '../middleware/auth.js';
+import express from "express";
+import { body, validationResult } from "express-validator";
+import Comment from "../models/Comment.js";
+import Like from "../models/Like.js";
+import Story from "../models/Story.js";
+import { authenticate, optionalAuth } from "../middleware/auth.js";
+import { trackCommentPosted } from "../utils/engagementTracker.js";
 
 const router = express.Router();
 
 // @desc    Get comment by ID
 // @route   GET /api/v1/comments/:id
 // @access  Public
-router.get('/:id', optionalAuth, async (req, res) => {
+router.get("/:id", optionalAuth, async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id)
-      .populate('author', 'name username avatar verified role')
-      .populate('story', 'title slug')
+      .populate("author", "name username avatar verified role")
+      .populate("story", "title slug")
       .populate({
-        path: 'replies',
+        path: "replies",
         populate: {
-          path: 'author',
-          select: 'name username avatar verified role'
-        }
+          path: "author",
+          select: "name username avatar verified role",
+        },
       });
 
     if (!comment || comment.isDeleted) {
       return res.status(404).json({
         success: false,
-        error: 'Comment not found'
+        error: "Comment not found",
       });
     }
 
@@ -36,7 +37,7 @@ router.get('/:id', optionalAuth, async (req, res) => {
       const like = await Like.findOne({
         user: req.user.id,
         target: comment._id,
-        targetType: 'Comment'
+        targetType: "Comment",
       });
       isLiked = !!like;
     }
@@ -45,14 +46,14 @@ router.get('/:id', optionalAuth, async (req, res) => {
       success: true,
       data: {
         ...comment.toObject(),
-        isLiked
-      }
+        isLiked,
+      },
     });
   } catch (error) {
-    console.error('Get comment error:', error);
+    console.error("Get comment error:", error);
     res.status(500).json({
       success: false,
-      error: 'Server error fetching comment'
+      error: "Server error fetching comment",
     });
   }
 });
@@ -60,76 +61,92 @@ router.get('/:id', optionalAuth, async (req, res) => {
 // @desc    Update comment
 // @route   PUT /api/v1/comments/:id
 // @access  Private (Author or Admin)
-router.put('/:id', authenticate, [
-  body('content').trim().isLength({ min: 1, max: 1000 }).withMessage('Comment content is required and must be less than 1000 characters')
-], async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
+router.put(
+  "/:id",
+  authenticate,
+  [
+    body("content")
+      .trim()
+      .isLength({ min: 1, max: 1000 })
+      .withMessage(
+        "Comment content is required and must be less than 1000 characters"
+      ),
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          error: "Validation failed",
+          details: errors.array(),
+        });
+      }
+
+      const comment = await Comment.findById(req.params.id);
+
+      if (!comment || comment.isDeleted) {
+        return res.status(404).json({
+          success: false,
+          error: "Comment not found",
+        });
+      }
+
+      // Check if user is author or admin
+      if (
+        comment.author.toString() !== req.user.id &&
+        req.user.role !== "admin"
+      ) {
+        return res.status(403).json({
+          success: false,
+          error: "Not authorized to update this comment",
+        });
+      }
+
+      comment.content = req.body.content;
+      comment.isEdited = true;
+      comment.editedAt = new Date();
+
+      await comment.save();
+      await comment.populate("author", "name username avatar verified role");
+
+      res.json({
+        success: true,
+        message: "Comment updated successfully",
+        data: comment,
+      });
+    } catch (error) {
+      console.error("Update comment error:", error);
+      res.status(500).json({
         success: false,
-        error: 'Validation failed',
-        details: errors.array()
+        error: "Server error updating comment",
       });
     }
-
-    const comment = await Comment.findById(req.params.id);
-
-    if (!comment || comment.isDeleted) {
-      return res.status(404).json({
-        success: false,
-        error: 'Comment not found'
-      });
-    }
-
-    // Check if user is author or admin
-    if (comment.author.toString() !== req.user.id && req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        error: 'Not authorized to update this comment'
-      });
-    }
-
-    comment.content = req.body.content;
-    comment.isEdited = true;
-    comment.editedAt = new Date();
-
-    await comment.save();
-    await comment.populate('author', 'name username avatar verified role');
-
-    res.json({
-      success: true,
-      message: 'Comment updated successfully',
-      data: comment
-    });
-  } catch (error) {
-    console.error('Update comment error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Server error updating comment'
-    });
   }
-});
+);
 
 // @desc    Delete comment
 // @route   DELETE /api/v1/comments/:id
 // @access  Private (Author or Admin)
-router.delete('/:id', authenticate, async (req, res) => {
+router.delete("/:id", authenticate, async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
 
     if (!comment || comment.isDeleted) {
       return res.status(404).json({
         success: false,
-        error: 'Comment not found'
+        error: "Comment not found",
       });
     }
 
     // Check if user is author or admin
-    if (comment.author.toString() !== req.user.id && req.user.role !== 'admin') {
+    if (
+      comment.author.toString() !== req.user.id &&
+      req.user.role !== "admin"
+    ) {
       return res.status(403).json({
         success: false,
-        error: 'Not authorized to delete this comment'
+        error: "Not authorized to delete this comment",
       });
     }
 
@@ -146,13 +163,13 @@ router.delete('/:id', authenticate, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Comment deleted successfully'
+      message: "Comment deleted successfully",
     });
   } catch (error) {
-    console.error('Delete comment error:', error);
+    console.error("Delete comment error:", error);
     res.status(500).json({
       success: false,
-      error: 'Server error deleting comment'
+      error: "Server error deleting comment",
     });
   }
 });
@@ -160,21 +177,21 @@ router.delete('/:id', authenticate, async (req, res) => {
 // @desc    Like/Unlike comment
 // @route   POST /api/v1/comments/:id/like
 // @access  Private
-router.post('/:id/like', authenticate, async (req, res) => {
+router.post("/:id/like", authenticate, async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
 
     if (!comment || comment.isDeleted) {
       return res.status(404).json({
         success: false,
-        error: 'Comment not found'
+        error: "Comment not found",
       });
     }
 
     const existingLike = await Like.findOne({
       user: req.user.id,
       target: comment._id,
-      targetType: 'Comment'
+      targetType: "Comment",
     });
 
     if (existingLike) {
@@ -182,35 +199,35 @@ router.post('/:id/like', authenticate, async (req, res) => {
       await Like.findByIdAndDelete(existingLike._id);
       comment.likesCount = Math.max(0, comment.likesCount - 1);
       await comment.save();
-      
+
       res.json({
         success: true,
-        message: 'Comment unliked',
+        message: "Comment unliked",
         isLiked: false,
-        likesCount: comment.likesCount
+        likesCount: comment.likesCount,
       });
     } else {
       // Like
       await Like.create({
         user: req.user.id,
         target: comment._id,
-        targetType: 'Comment'
+        targetType: "Comment",
       });
       comment.likesCount += 1;
       await comment.save();
-      
+
       res.json({
         success: true,
-        message: 'Comment liked',
+        message: "Comment liked",
         isLiked: true,
-        likesCount: comment.likesCount
+        likesCount: comment.likesCount,
       });
     }
   } catch (error) {
-    console.error('Like comment error:', error);
+    console.error("Like comment error:", error);
     res.status(500).json({
       success: false,
-      error: 'Server error processing like'
+      error: "Server error processing like",
     });
   }
 });

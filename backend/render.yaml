@@ -21,7 +21,7 @@ services:
       - key: JWT_EXPIRE
         value: 30d
       - key: FRONTEND_URL
-        value: https://your-frontend-url.com  # Update this with your frontend URL
+        value: https://evidark.app  # Updated to your actual domain
       - key: NODE_OPTIONS
         value: --max-old-space-size=1024  # Optimize memory usage
     healthCheckPath: /api/health

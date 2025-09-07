@@ -3,7 +3,7 @@ services:
   - type: web
     name: evidark-backend
     env: node
-    region: singapore  # Choose the region closest to your users
+    region: singapore # Choose the region closest to your users
     plan: free
     buildCommand: npm install
     startCommand: node server.js
@@ -21,9 +21,9 @@ services:
       - key: JWT_EXPIRE
         value: 30d
       - key: FRONTEND_URL
-        value: https://evidark.app  # Updated to your actual domain
+        value: https://evidark.app # Updated to your actual domain
       - key: NODE_OPTIONS
-        value: --max-old-space-size=1024  # Optimize memory usage
+        value: --max-old-space-size=1024 # Optimize memory usage
     healthCheckPath: /api/health
     autoDeploy: true
     numInstances: 1
@@ -35,7 +35,7 @@ databases:
     user: evidark_user
     plan: free
     mongoVersion: 6.0
-    ipAllowList: []  # Restrict access to Render services only
+    ipAllowList: [] # Restrict access to Render services only
 
 # Environment Variables Documentation
 # Required environment variables:

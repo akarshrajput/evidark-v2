@@ -173,13 +173,15 @@ const Page = () => {
 
 const PageWrapper = () => {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin">
-          <Skull className="w-8 h-8 text-primary" />
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="animate-spin">
+            <Skull className="w-8 h-8 text-primary" />
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <Page />
     </Suspense>
   );

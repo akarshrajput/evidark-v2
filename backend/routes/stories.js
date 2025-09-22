@@ -66,6 +66,7 @@ router.get(
       const defaultFields = [
         "title",
         "photo",
+        "firstImage",
         "slug",
         "description",
         "status",
@@ -81,6 +82,7 @@ router.get(
         "downvotes",
         "createdAt",
         "publishedAt",
+        // Removed content field for optimization - use firstImage instead
       ];
 
       // For public route, only show published stories
@@ -364,6 +366,9 @@ router.get("/following", authenticate, async (req, res) => {
       author: { $in: currentUser.following },
       status: "published",
     })
+      .select(
+        "title photo firstImage slug description category author tags readingTime views likesCount commentsCount bookmarksCount upvotes downvotes createdAt publishedAt"
+      )
       .populate("author", "name username avatar verified")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
@@ -948,6 +953,9 @@ router.get("/categories", async (req, res) => {
       category: category.toLowerCase(),
       status: "published",
     })
+      .select(
+        "title photo firstImage slug description category author tags readingTime views likesCount commentsCount bookmarksCount upvotes downvotes createdAt publishedAt"
+      )
       .populate("author", "name username avatar verified")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)

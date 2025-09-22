@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import slugify from "slugify";
+import { extractFirstImage } from "../utils/imageExtractor.js";
 
 const storySchema = new mongoose.Schema(
   {
@@ -24,6 +25,10 @@ const storySchema = new mongoose.Schema(
       required: [true, "Story content is required"],
     },
     photo: {
+      type: String,
+      default: "",
+    },
+    firstImage: {
       type: String,
       default: "",
     },
@@ -214,6 +219,9 @@ storySchema.pre("save", function (next) {
     // Update metadata
     this.metadata.wordCount = wordCount;
     this.metadata.characterCount = this.content.length;
+
+    // Extract first image from content
+    this.firstImage = extractFirstImage(this.content);
   }
 
   // Set published date when status changes to published

@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Image from "next/image";
 import {
   Heart,
   MessageCircle,
@@ -37,6 +38,55 @@ const safeFormatDate = (dateString) => {
   }
 };
 
+// Extract first image from story content
+const extractFirstImage = (content) => {
+  if (!content) return null;
+
+  try {
+    // Look for img tags - match various HTML structures
+    const imgTagMatch = content.match(
+      /<img[^>]*\ssrc\s*=\s*["']([^"']+)["'][^>]*>/i
+    );
+    if (imgTagMatch) {
+      return imgTagMatch[1];
+    }
+
+    // Alternative pattern for img tags
+    const imgTagMatch2 = content.match(
+      /<img[^>]*src\s*=\s*["']([^"']+)["'][^>]*>/i
+    );
+    if (imgTagMatch2) {
+      return imgTagMatch2[1];
+    }
+
+    // Look for any src attribute in img tags (very permissive)
+    const imgSrcMatch = content.match(
+      /src\s*=\s*["']([^"']*(?:jpg|jpeg|png|gif|webp|svg)[^"']*)["']/i
+    );
+    if (imgSrcMatch) {
+      return imgSrcMatch[1];
+    }
+
+    // Look for markdown images
+    const markdownMatch = content.match(/!\[.*?\]\(([^)]+)\)/);
+    if (markdownMatch) {
+      return markdownMatch[1];
+    }
+
+    // Look for URLs that end with image extensions
+    const urlMatch = content.match(
+      /(https?:\/\/[^\s<>"']+\.(?:jpg|jpeg|png|gif|webp|svg|bmp|tiff|ico))/i
+    );
+    if (urlMatch) {
+      return urlMatch[1];
+    }
+  } catch (error) {
+    console.warn("Error extracting image from content:", error);
+  }
+
+  return null;
+};
+
 export default function StoryCard({ story, onVote, onLike, onBookmark }) {
   const { user, isAuthenticated } = useAuth();
   const [localLikeState, setLocalLikeState] = useState(story.isLiked ?? false);
@@ -49,6 +99,23 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
   );
   const [isLikeLoading, setIsLikeLoading] = useState(false);
   const [isBookmarkLoading, setIsBookmarkLoading] = useState(false);
+
+  // Use firstImage from backend if available, otherwise fallback to extraction for backwards compatibility
+  const firstImage =
+    story.firstImage ||
+    (story.content ? extractFirstImage(story.content) : null);
+
+  // Debug logging to see what's in the story object
+  useEffect(() => {
+    console.log("Story object:", {
+      title: story.title,
+      hasContent: !!story.content,
+      contentLength: story.content?.length,
+      firstImageFromBackend: story.firstImage,
+      firstImageUsed: firstImage,
+      isOptimized: !!story.firstImage, // Shows if using the optimized backend field
+    });
+  }, [story, firstImage]);
 
   useEffect(() => {
     setLocalLikeState(story.isLiked ?? false);
@@ -124,7 +191,7 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            {/* Professional Vote buttons */}
+            {/* Professional Vote buttons
             <div className="flex flex-col items-center gap-1 bg-muted/30 p-2 rounded-lg border border-border">
               <Button
                 variant="ghost"
@@ -145,7 +212,7 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
               >
                 <ArrowDown className="w-4 h-4" />
               </Button>
-            </div>
+            </div> */}
 
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
@@ -182,6 +249,37 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
                 <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
                   {story.description}
                 </p>
+              )}
+
+              {/* Story Image */}
+              {firstImage && (
+                <Link href={`/story/${story.slug}`} className="block mb-3">
+                  <div className="relative w-full h-40 sm:h-48 md:h-56 lg:h-64 rounded-lg overflow-hidden bg-muted/30 cursor-pointer group shadow-sm border border-border/50">
+                    <Image
+                      src={firstImage}
+                      alt={story.title}
+                      fill
+                      className="object-cover transition-all duration-300 group-hover:scale-105 group-hover:brightness-90"
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 70vw"
+                      priority={false}
+                      onError={(e) => {
+                        // Hide image container if it fails to load
+                        const container = e.target.closest(".relative");
+                        if (container) {
+                          container.style.display = "none";
+                        }
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                    {/* Hover overlay with read more indication */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-105">
+                      <div className="bg-background/90 backdrop-blur-sm px-3 py-2 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium text-foreground border border-border/20 shadow-lg">
+                        Read Story
+                      </div>
+                    </div>
+                  </div>
+                </Link>
               )}
 
               <div className="flex items-center gap-2 flex-wrap">

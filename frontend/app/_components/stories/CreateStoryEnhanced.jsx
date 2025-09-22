@@ -76,7 +76,10 @@ const CreateStoryEnhanced = () => {
         const items = res.data?.categories || [];
         setCategories(items);
         // if selected category no longer exists, reset
-        if (category && !items.some((c) => c.name?.toLowerCase() === category)) {
+        if (
+          category &&
+          !items.some((c) => c.name?.toLowerCase() === category)
+        ) {
           setCategory("");
         }
       } catch (e) {
@@ -246,12 +249,12 @@ const CreateStoryEnhanced = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto p-6 space-y-8">
+      <div className="max-w-7xl mx-auto py-2 lg:p-6 mt-4 space-y-8">
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
           {/* Main Content */}
           <div className="xl:col-span-3 space-y-6">
             {/* Title & Basic Info */}
-<Card className="professional-card border-none">
+            <Card className="professional-card border-none">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <BookOpen className="w-6 h-6 text-red-500" />
@@ -301,9 +304,13 @@ const CreateStoryEnhanced = () => {
                     <Label className="text-base font-medium">Category *</Label>
                     <Select value={category} onValueChange={setCategory}>
                       <SelectTrigger className="h-12 bg-background/50">
-                        <SelectValue placeholder={
-                          categoriesLoading ? "Loading categories..." : "Select a category"
-                        } />
+                        <SelectValue
+                          placeholder={
+                            categoriesLoading
+                              ? "Loading categories..."
+                              : "Select a category"
+                          }
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {categories.length === 0 && !categoriesLoading && (
@@ -327,7 +334,9 @@ const CreateStoryEnhanced = () => {
                       </SelectContent>
                     </Select>
                     {categoriesError && (
-                      <p className="text-xs text-red-400 mt-1">{categoriesError}</p>
+                      <p className="text-xs text-red-400 mt-1">
+                        {categoriesError}
+                      </p>
                     )}
                   </div>
 
@@ -436,9 +445,12 @@ const CreateStoryEnhanced = () => {
                     Publication Status
                   </Label>
                   <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-                    <p className="text-sm text-green-400 font-medium">Published</p>
+                    <p className="text-sm text-green-400 font-medium">
+                      Published
+                    </p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Your story will be published immediately and visible to all users.
+                      Your story will be published immediately and visible to
+                      all users.
                     </p>
                   </div>
                 </div>

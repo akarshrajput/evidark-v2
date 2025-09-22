@@ -71,7 +71,9 @@ export default function LeaderboardPage() {
       {/* Header */}
       <div className="text-center space-y-4">
         <h1 className="text-3xl font-bold text-foreground">Leaderboard</h1>
-        <p className="text-muted-foreground">See who's leading the darkness</p>
+        <p className="text-muted-foreground">
+          See who&apos;s leading the darkness
+        </p>
 
         {/* Tabs */}
         <div className="flex justify-center gap-2">

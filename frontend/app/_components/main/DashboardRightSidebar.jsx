@@ -96,7 +96,7 @@ const DashboardRightSidebar = () => {
   };
 
   return (
-    <div className="h-full bg-background">
+    <div className="bg-background">
       <div className="p-6 space-y-6">
         {/* Trending Stories */}
         <Card className="evidark-card border-none rounded-xl">
@@ -160,86 +160,6 @@ const DashboardRightSidebar = () => {
 
         {/* Weekly Leaderboard */}
         <WeeklyLeaderboard />
-
-        {/* Who to follow */}
-        {isAuthenticated && (
-          <Card className="evidark-card border-none rounded-xl">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <Users className="w-5 h-5 text-primary" />
-                Suggested Authors
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              {usersLoading ? (
-                <div className="p-4 space-y-3">
-                  {[...Array(3)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-3 animate-pulse"
-                    >
-                      <div className="w-10 h-10 bg-muted rounded-full"></div>
-                      <div className="flex-1">
-                        <div className="h-4 bg-muted rounded mb-1"></div>
-                        <div className="h-3 bg-muted rounded w-2/3"></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-0">
-                  {suggestedUsers.slice(0, 4).map((suggestedUser) => (
-                    <div
-                      key={suggestedUser._id}
-                      className="flex items-center justify-between p-4 hover:bg-accent/50 transition-colors border-b border-border last:border-b-0"
-                    >
-                      <Link
-                        href={`/user/${suggestedUser.username}`}
-                        className="flex items-center gap-3 flex-1 min-w-0"
-                      >
-                        <Avatar className="w-10 h-10">
-                          <AvatarImage
-                            src={
-                              suggestedUser.profilePic || "/default-avatar.png"
-                            }
-                            alt={suggestedUser.username}
-                          />
-                          <AvatarFallback className="bg-secondary text-secondary-foreground text-sm">
-                            {suggestedUser.username?.charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-foreground truncate text-sm">
-                            {suggestedUser.displayName ||
-                              suggestedUser.username}
-                          </p>
-                          <p className="text-xs text-muted-foreground truncate">
-                            @{suggestedUser.username}
-                          </p>
-                        </div>
-                      </Link>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="rounded-lg px-3 py-1 text-xs border border-border hover:bg-accent"
-                      >
-                        Follow
-                      </Button>
-                    </div>
-                  ))}
-                  <div className="p-4 border-t border-border">
-                    <Link
-                      href="/users"
-                      className="text-sm text-primary hover:text-primary/80 font-medium"
-                    >
-                      Show more suggestions →
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
 
         {/* Upcoming Events */}
         <Card className="evidark-card border-none rounded-xl">
@@ -312,14 +232,14 @@ const DashboardRightSidebar = () => {
         </Card>
 
         {/* Community Stats or Guidelines */}
-        <Card className="bg-card border border-border">
+        <Card className="bg-card border-none">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg font-semibold">
               About EviDark
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm text-muted-foreground">
-            <p>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
               A professional platform for dark stories, mysteries, and
               supernatural tales.
             </p>
@@ -327,6 +247,28 @@ const DashboardRightSidebar = () => {
               <span>Stories: 666</span>
               <span>Authors: 1,337</span>
               <span>Communities: 13</span>
+            </div>
+
+            {/* Quick Links */}
+            <div className="space-y-2 pt-2 border-t border-border">
+              <Link
+                href="/about"
+                className="block text-xs text-muted-foreground hover:text-foreground transition-colors py-1"
+              >
+                About Us
+              </Link>
+              <Link
+                href="/help"
+                className="block text-xs text-muted-foreground hover:text-foreground transition-colors py-1"
+              >
+                Help & FAQ
+              </Link>
+              <Link
+                href="/contact"
+                className="block text-xs text-muted-foreground hover:text-foreground transition-colors py-1"
+              >
+                Contact Support
+              </Link>
             </div>
           </CardContent>
         </Card>

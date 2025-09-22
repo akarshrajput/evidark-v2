@@ -259,9 +259,11 @@
 
   html,
   body {
-    overflow: hidden;
     height: 100vh;
     width: 100vw;
+    /* Enable smooth scrolling and touch scrolling on mobile */
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
   }
 
   @keyframes spooky-gradient {

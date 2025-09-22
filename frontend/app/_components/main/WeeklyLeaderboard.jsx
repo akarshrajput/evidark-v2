@@ -4,8 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Trophy, Medal, Star } from "lucide-react";
+import { Crown, Trophy, Medal, Star, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { Arrow } from "@radix-ui/react-dropdown-menu";
 
 const WeeklyLeaderboard = () => {
   const { data: leaderboardData, isLoading } = useQuery({
@@ -97,7 +98,7 @@ const WeeklyLeaderboard = () => {
 
   return (
     <Card className="evidark-card border-none rounded-xl">
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-0">
         <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
           <Crown className="w-4 h-4 text-primary" />
           Weekly Leaders
@@ -155,12 +156,13 @@ const WeeklyLeaderboard = () => {
         })}
 
         {/* View all link */}
-        <div className="pt-2 border-t border-gray-700">
+        <div className="pt-2">
           <Link
             href="/leaderboard"
-            className="block text-center text-xs text-blue-400 hover:text-blue-300 transition-colors"
+            className="block text-xs text-red-500 hover:underline transition-colors"
           >
             View Full Leaderboard
+            <ArrowRight className="inline-block w-4 h-4 ml-1" />
           </Link>
         </div>
       </CardContent>

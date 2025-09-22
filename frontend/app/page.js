@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   useQuery,
   useInfiniteQuery,
@@ -34,6 +34,7 @@ export default function MainPage() {
   const [activeFilter, setActiveFilter] = useState("all");
   const { user, isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
+  const observer = useRef();
 
   // Vote handler
   const handleVote = async (storyId, voteType) => {
@@ -191,7 +192,7 @@ export default function MainPage() {
         }
 
         const response = await fetch(
-          `${baseUrl}/api/v1/stories/following?page=${pageParam}&limit=6`,
+          `${baseUrl}/api/v1/stories/following?page=${pageParam}&limit=10`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -205,7 +206,7 @@ export default function MainPage() {
 
       // Regular stories endpoint for other filters
       const response = await fetch(
-        `${baseUrl}/api/v1/stories?page=${pageParam}&limit=6&sort=${
+        `${baseUrl}/api/v1/stories?page=${pageParam}&limit=10&sort=${
           activeFilter === "trending"
             ? "-views,-likes"
             : activeFilter === "recent"
@@ -219,11 +220,32 @@ export default function MainPage() {
       return response.json();
     },
     getNextPageParam: (lastPage, pages) => {
-      return lastPage.data.length === 6 ? pages.length + 1 : undefined;
+      return lastPage.data.length === 10 ? pages.length + 1 : undefined;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     enabled: activeFilter !== "following" || isAuthenticated, // Only enable following query when authenticated
   });
+
+  // Intersection observer callback for infinite scroll
+  const lastStoryElementRef = useCallback(
+    (node) => {
+      if (isFetchingNextPage) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+          }
+        },
+        {
+          threshold: 0.1,
+          rootMargin: "100px",
+        }
+      );
+      if (node) observer.current.observe(node);
+    },
+    [isFetchingNextPage, hasNextPage, fetchNextPage]
+  );
 
   // Mock data for trending authors
   const trendingAuthors = {
@@ -324,27 +346,34 @@ export default function MainPage() {
   // Flatten stories from all pages
   const stories = storiesData?.pages?.flatMap((page) => page.data) || [];
 
-  // Infinite scroll effect
+  // Improved infinite scroll effect with better mobile support
   useEffect(() => {
     const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop !==
-          document.documentElement.offsetHeight ||
-        isFetchingNextPage
-      ) {
+      if (isFetchingNextPage || !hasNextPage) {
         return;
       }
-      if (hasNextPage) {
+
+      // More reliable scroll detection for desktop and mobile
+      const scrollTop =
+        document.documentElement.scrollTop || document.body.scrollTop;
+      const scrollHeight =
+        document.documentElement.scrollHeight || document.body.scrollHeight;
+      const clientHeight =
+        document.documentElement.clientHeight || window.innerHeight;
+
+      // Trigger when within 200px of bottom
+      if (scrollTop + clientHeight >= scrollHeight - 200) {
         fetchNextPage();
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    // Use passive listener for better mobile performance
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
-    <div className="min-h-screen space-y-6">
+    <div className="min-h-screen space-y-6 touch-pan-y">
       {/* Filter Section */}
       <FilterButtons
         activeFilter={activeFilter}
@@ -391,22 +420,45 @@ export default function MainPage() {
           </div>
         ) : (
           <>
-            {stories.map((story, index) => (
-              <StoryCard
-                key={`${story._id}-${index}`}
-                story={story}
-                onVote={handleVote}
-                onLike={handleLike}
-                onBookmark={handleBookmark}
-              />
-            ))}
+            {stories.map((story, index) => {
+              // Attach ref to the last story for intersection observer
+              const isLastStory = index === stories.length - 1;
+              return (
+                <div
+                  key={`${story._id}-${index}`}
+                  ref={isLastStory ? lastStoryElementRef : null}
+                >
+                  <StoryCard
+                    story={story}
+                    onVote={handleVote}
+                    onLike={handleLike}
+                    onBookmark={handleBookmark}
+                  />
+                </div>
+              );
+            })}
           </>
         )}
 
         {/* Loading more indicator */}
         {isFetchingNextPage && (
           <div className="py-8 flex justify-center">
-            <LoadingIndicator />
+            <div className="flex items-center space-x-2 text-muted-foreground">
+              <LoadingIndicator />
+              <span className="text-sm">Loading more spooky stories...</span>
+            </div>
+          </div>
+        )}
+
+        {/* End of stories indicator */}
+        {!hasNextPage && stories.length > 0 && (
+          <div className="py-8 flex justify-center">
+            <div className="text-center text-muted-foreground">
+              <Skull className="w-6 h-6 mx-auto mb-2 opacity-50" />
+              <p className="text-sm">
+                You&apos;ve reached the end of the darkness...
+              </p>
+            </div>
           </div>
         )}
       </div>

@@ -2,7 +2,7 @@
 
 import { Skull, Ghost, Eye, ArrowRight } from "lucide-react";
 import { Creepster, Inter } from "next/font/google";
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -26,7 +26,7 @@ const inter = Inter({
   display: "swap",
 });
 
-const page = () => {
+const Page = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { isAuthenticated, loading } = useAuth();
@@ -171,4 +171,18 @@ const page = () => {
   );
 };
 
-export default page;
+const PageWrapper = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin">
+          <Skull className="w-8 h-8 text-primary" />
+        </div>
+      </div>
+    }>
+      <Page />
+    </Suspense>
+  );
+};
+
+export default PageWrapper;

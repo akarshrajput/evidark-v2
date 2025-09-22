@@ -373,7 +373,7 @@ export default function MainPage() {
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
-    <div className="min-h-screen space-y-6 touch-pan-y">
+    <div className="min-h-screen space-y-6 mt-4 lg:mt-0 touch-pan-y">
       {/* Filter Section */}
       <FilterButtons
         activeFilter={activeFilter}

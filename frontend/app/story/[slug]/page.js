@@ -186,10 +186,10 @@ const Page = async ({ params }) => {
               <Skull className="w-3 h-3 mr-1" />
               EVIDARK ORIGINAL
             </Badge>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-foreground leading-tight">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-foreground leading-tight break-words ">
               {story.title}
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+            <p className="text-xl text-muted-foreground mb-8 leading-relaxed break-words ">
               {story.description}
             </p>
 

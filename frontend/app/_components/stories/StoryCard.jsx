@@ -267,10 +267,11 @@ export default function StoryCard({ story, onVote, onLike, onBookmark }) {
               Share
             </Button>
           </div>
-
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Eye className="w-3 h-3" />
-            {story.views || 0} views
+          <div className="sm:block hidden">
+            <div className="flex items-center  gap-1 text-xs text-muted-foreground">
+              <Eye className="w-3 h-3" />
+              {story.views || 0} views
+            </div>
           </div>
         </div>
       </CardContent>

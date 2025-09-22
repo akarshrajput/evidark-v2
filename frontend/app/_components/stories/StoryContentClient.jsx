@@ -8,9 +8,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
 import StoryCompletionTracker from "./StoryCompletionTracker";
+import { usePathname } from "next/navigation";
 
 export default function StoryContentClient({ initialStory }) {
   const { user, isAuthenticated, loading } = useAuth();
+  const pathname = usePathname();
   const [story, setStory] = useState(initialStory);
   const [viewCounted, setViewCounted] = useState(false);
   const [contentLoaded, setContentLoaded] = useState(
@@ -77,7 +79,7 @@ export default function StoryContentClient({ initialStory }) {
   // Show content immediately if available
   if (shouldShowContent || shouldShowContentForAuth) {
     return (
-      <div className="bg-background/30 backdrop-blur-sm rounded-lg p-2 md:p-8 mb-8">
+      <div className="bg-background/30 backdrop-blur-sm rounded-lg md:p-8 mb-8">
         {shouldShowContent && (
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2 text-sm text-green-400">
@@ -152,7 +154,7 @@ export default function StoryContentClient({ initialStory }) {
   // User is confirmed not authenticated - show login prompt
   if (!loading && !isAuthenticated) {
     return (
-      <div className="bg-background/30 backdrop-blur-sm rounded-lg p-8 mb-8">
+      <div className="bg-background/30 backdrop-blur-sm rounded-lg p-2 mb-8">
         {/* Show preview content */}
         {story.contentPreview && (
           <div
@@ -196,13 +198,15 @@ export default function StoryContentClient({ initialStory }) {
                 Sign in to read the full dark tale and unlock all features
               </p>
               <div className="flex gap-3 justify-center">
-                <Link href="/login">
+                <Link href={`/login?redirect=${encodeURIComponent(pathname)}`}>
                   <Button className="bg-red-600 hover:bg-red-700 text-white border-none">
                     <LogIn className="w-4 h-4 mr-2" />
                     Sign In
                   </Button>
                 </Link>
-                <Link href="/register">
+                <Link
+                  href={`/register?redirect=${encodeURIComponent(pathname)}`}
+                >
                   <Button
                     variant="outline"
                     className="border-red-600/50 text-red-200 hover:bg-red-950/30"

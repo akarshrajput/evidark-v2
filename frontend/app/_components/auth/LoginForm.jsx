@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +16,8 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +26,13 @@ export default function LoginForm() {
     try {
       await login(email, password);
       toast.success("Welcome back to the darkness!");
-      router.push("/");
+
+      // Redirect to the original page if redirect parameter exists, otherwise go to home
+      if (redirectTo) {
+        router.push(redirectTo);
+      } else {
+        router.push("/");
+      }
     } catch (error) {
       toast.error(error.message || "Invalid email or password");
     } finally {

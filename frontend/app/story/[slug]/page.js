@@ -180,7 +180,7 @@ const Page = async ({ params }) => {
       {/* Spooky Header */}
       <div className="relative overflow-hidden bg-background/95">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNkYzI2MjYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50"></div>
-        <div className="container mx-auto px-6 py-12 relative">
+        <div className="container mx-auto px-2 py-12 relative">
           <div className="max-w-4xl mx-auto">
             <Badge className="mb-4 bg-red-600/10 text-red-400 border-red-600/20">
               <Skull className="w-3 h-3 mr-1" />
@@ -232,7 +232,7 @@ const Page = async ({ params }) => {
         </div>
       </div>
 
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto lg:px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {/* Main Content */}
           <div className="lg:col-span-3">

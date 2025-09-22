@@ -77,7 +77,7 @@ export default function StoryContentClient({ initialStory }) {
   // Show content immediately if available
   if (shouldShowContent || shouldShowContentForAuth) {
     return (
-      <div className="bg-background/30 backdrop-blur-sm rounded-lg p-8 mb-8">
+      <div className="bg-background/30 backdrop-blur-sm rounded-lg p-2 md:p-8 mb-8">
         {shouldShowContent && (
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2 text-sm text-green-400">
